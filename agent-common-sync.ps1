@@ -227,9 +227,17 @@ function Find-SkillDirs([string]$Root) {
   return $unique
 }
 
+function Find-DirectSkillDirs([string]$Root) {
+  if (-not (Test-Path -LiteralPath $Root)) { return @() }
+  if (Test-Path -LiteralPath (Join-Path $Root 'SKILL.md')) { return @(Get-Item -LiteralPath $Root) }
+  $skillsRoot = Join-Path $Root 'skills'
+  if (-not (Test-Path -LiteralPath $skillsRoot)) { return @() }
+  return @(Get-ChildItem -LiteralPath $skillsRoot -Directory | Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'SKILL.md') })
+}
+
 function Copy-Skills([string]$Root, [System.Collections.IDictionary]$TargetDefs) {
-  $skillDirs = @(Find-SkillDirs $Root)
-  if ($skillDirs.Count -eq 0) { Warn "No skills found under $Root. Put skill folders containing SKILL.md there."; return @() }
+  $skillDirs = @(Find-DirectSkillDirs $Root)
+  if ($skillDirs.Count -eq 0) { Warn "No selected skills found under $Root\skills. Put chosen skill folders containing SKILL.md there."; return @() }
   $installed = @()
   foreach ($skill in $skillDirs) {
     $name = $skill.Name
