@@ -1,0 +1,13 @@
+# Local catalogs and synced assets
+.agents/
+catalog/
+skills/
+
+# Backups produced by the installer
+*.bak.*
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
