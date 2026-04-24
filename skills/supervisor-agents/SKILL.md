@@ -1,25 +1,40 @@
 ---
 name: supervisor-agents
-description: Supervise code and architecture changes by reviewing git diffs against system context, implementation plans, and ADRs using distinct reviewer roles. Use this skill whenever the user asks to audit a PR, inspect a git diff, check whether implementation follows a plan, verify architectural decisions, compare code changes against requirements, or produce a compliance report. Especially use it when the request mentions context, plan, ADR, architecture, violations, compliance, multi-agent review, or objective supervision.
+description: "Use this skill whenever the user wants to supervise code or architecture changes by reviewing git diffs against system context, implementation plans, and ADRs. Triggers include: requests to audit a PR, inspect a git diff, check whether implementation follows a plan, verify architectural decisions, compare code changes against requirements, find violations or compliance issues, or produce an objective supervision report. Also use when the user mentions context, plan, ADR, architecture, compliance, violations, multi-agent review, code review, architecture review, or asks for separate reviewer roles such as Diff Analyzer, Context Checker, Plan Validator, ADR Auditor, and Aggregator. Do NOT use when the user wants direct code implementation, refactoring, or bug fixing without an explicit supervision/review objective."
+license: Proprietary. LICENSE.txt has complete terms
 ---
 
-# Supervisor Agents
+# Supervisor Agents code and architecture review
 
-This skill guides objective supervision of code and architecture changes. It does not implement fixes. It reads the available evidence, separates the review into independent perspectives, and returns a concise compliance report.
+## Overview
 
-## Core behavior
+Supervisor Agents is a review-only workflow for checking code and architecture changes against the evidence that defines what the system should do.
 
-- Review only. Do not change code, docs, plans, ADRs, configs, or tests unless the user explicitly changes the task from supervision to editing.
+Use it to collect context, plan, ADRs, and git diff; analyze them through separate reviewer roles; and produce an objective compliance report. The workflow does not implement fixes. It reports what complies, what violates expectations, what is unknown, and what should happen next.
+
+## Quick Reference
+
+| Task | Approach |
+|------|----------|
+| Understand the change set | Run git status/diff commands and summarize changed files |
+| Check system fit | Compare diff against README, requirements, architecture docs, and constraints |
+| Check plan fit | Map changed files and behavior to plan steps or PR/task intent |
+| Check ADR fit | Compare implementation with active architecture decisions |
+| Produce final output | Aggregate findings into Summary, Details, and Recommendations |
+
+## Core Rules
+
+- Review only. Do not change code, docs, plans, ADRs, configs, tests, or generated files unless the user explicitly changes the task from supervision to editing.
 - Ground every finding in evidence: diff hunks, file paths, plan items, ADR ids, requirements, or documented constraints.
 - Prefer repository-local context over assumptions. If evidence is missing, mark the finding as unknown instead of inventing requirements.
-- Keep the reviewer roles independent. If subagents are available, run them in parallel; otherwise perform the same roles as separate passes.
-- Distinguish confirmed violations from risks, incomplete evidence, and optional improvements.
+- Keep reviewer roles independent. If subagents are available, run them in parallel; otherwise perform the same roles as separate passes.
+- Separate confirmed violations from risks, missing evidence, and optional improvements.
 
-## Evidence to collect
+## Evidence Collection
 
 Start with user-supplied paths or text. If not provided, inspect likely repository locations.
 
-**Context candidates:**
+### Context Sources
 
 ```text
 README.md
@@ -31,7 +46,7 @@ architecture/
 requirements.md
 ```
 
-**Plan candidates:**
+### Plan Sources
 
 ```text
 PLAN.md
@@ -42,7 +57,7 @@ docs/plan*
 issue or PR description supplied by the user
 ```
 
-**ADR candidates:**
+### ADR Sources
 
 ```text
 docs/adr/
@@ -52,7 +67,7 @@ decisions/
 docs/architecture/
 ```
 
-**Diff commands:**
+### Diff Commands
 
 ```bash
 git status --short
@@ -64,7 +79,9 @@ git log --oneline --decorate -n 10
 
 If the review target is ambiguous, ask one focused question about the base branch, PR range, or paths. Otherwise continue best-effort and label gaps.
 
-## Reviewer roles
+---
+
+## Reviewer Roles
 
 ### Diff Analyzer
 
@@ -110,15 +127,21 @@ Produce the final supervision report.
 - Preserve uncertainty when context, plan, ADRs, tests, or diff range are incomplete.
 - Include actionable recommendations without patching files.
 
-## Severity rubric
+---
 
-- **Blocker**: Violates explicit requirements, security boundaries, data integrity, production safety, or a core active ADR.
-- **High**: Likely functional regression, incompatible interface, missing migration, or major plan divergence.
-- **Medium**: Partial implementation, missing tests/docs for meaningful behavior, or unclear architecture drift.
-- **Low**: Minor naming, organization, documentation, or cleanup mismatch.
-- **Informational**: Useful observation with no required action.
+## Severity Rubric
 
-## Report structure
+| Severity | Meaning |
+|----------|---------|
+| Blocker | Violates explicit requirements, security boundaries, data integrity, production safety, or a core active ADR |
+| High | Likely functional regression, incompatible interface, missing migration, or major plan divergence |
+| Medium | Partial implementation, missing tests/docs for meaningful behavior, or unclear architecture drift |
+| Low | Minor naming, organization, documentation, or cleanup mismatch |
+| Informational | Useful observation with no required action |
+
+---
+
+## Report Structure
 
 Always use this structure unless the user asks for another format:
 
@@ -166,9 +189,17 @@ Always use this structure unless the user asks for another format:
 3. <ADR/plan update suggestion if needed>
 ```
 
-## Example trigger prompts
+---
+
+## Example Trigger Prompts
 
 - "Review this PR against the plan and ADRs."
 - "Analyze the git diff and report architecture violations."
 - "Check whether these changes comply with the system context."
 - "Run a multi-agent supervision review for context, plan, ADR, and diff."
+
+## Dependencies
+
+- Git repository access for diff inspection.
+- Context, plan, and ADR documents when strict compliance judgment is required.
+- Optional subagent capability for parallel reviewer roles; otherwise perform the roles sequentially in one response.
