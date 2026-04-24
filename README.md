@@ -158,6 +158,8 @@ With `-UpdateCatalog`, the script clones or updates these public sources into `~
 - <https://github.com/DevMeoU/awesome-agent-skills>
 - <https://github.com/DevMeoU/andrej-karpathy-skills>
 - <https://github.com/DevMeoU/everything-claude-code>
+- <https://github.com/DevMeoU/supervisor-agents-skill>
+- <https://github.com/DevMeoU/template-for-skills-agent>
 - <https://github.com/modelcontextprotocol/servers>
 
 Catalogs are for discovery. Review/copy selected skills into `~/.agents/skills` before syncing.

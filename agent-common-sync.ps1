@@ -317,6 +317,8 @@ if ($UpdateCatalog) {
   Clone-Or-Pull 'https://github.com/DevMeoU/awesome-agent-skills.git' (Join-Path $catalog 'awesome-agent-skills')
   Clone-Or-Pull 'https://github.com/DevMeoU/andrej-karpathy-skills.git' (Join-Path $catalog 'andrej-karpathy-skills')
   Clone-Or-Pull 'https://github.com/DevMeoU/everything-claude-code.git' (Join-Path $catalog 'everything-claude-code')
+  Clone-Or-Pull 'https://github.com/DevMeoU/supervisor-agents-skill.git' (Join-Path $catalog 'supervisor-agents-skill')
+  Clone-Or-Pull 'https://github.com/DevMeoU/template-for-skills-agent.git' (Join-Path $catalog 'template-for-skills-agent')
   Clone-Or-Pull 'https://github.com/modelcontextprotocol/servers.git' (Join-Path $catalog 'mcp-servers')
   Ok "Catalog update step finished. Review/copy chosen skills into $Source\skills before syncing."
 }
