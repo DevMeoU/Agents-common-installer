@@ -171,10 +171,12 @@ This repository includes bundled skills:
 ```text
 skills/project-skill-recommender/SKILL.md
 skills/supervisor-agents/SKILL.md
+skills/esp-idf-firmware/SKILL.md
 ```
 
 - `project-skill-recommender` is the default repo-onboarding skill. It scans the current project and recommends/install matching skills from available catalogs.
 - `supervisor-agents` is a multi-agent code and architecture supervision skill for reviewing git diffs against context, implementation plans, and ADRs.
+- `esp-idf-firmware` is for ESP-IDF / ESP32-family firmware projects with `sdkconfig`, component CMake, partitions, build/flash/monitor workflows, and embedded safety constraints.
 
 To install a bundled skill into your common source manually, copy it into `~/.agents/skills`:
 
@@ -214,6 +216,7 @@ powershell -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -ProjectPath . 
 Current heuristics look for signals such as:
 
 - `docs/adr`, `adr`, `PLAN.md` → `supervisor-agents` when available
+- `sdkconfig`, `sdkconfig.defaults`, `CMakeLists.txt`, `main/`, `partitions/`, `idf_component.yml` → `esp-idf-firmware` when available
 - n8n workflow JSON containing `n8n-nodes-base` → an n8n-related skill when available
 - `SKILL.md` / `template-skill` → `skill-creator` when available
 - `mcp.json`, `.mcp.json`, `mcpServers`, MCP docs → `mcp-builder` when available

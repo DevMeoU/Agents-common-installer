@@ -296,6 +296,9 @@ function Get-ProjectSkillRecommendations([string]$Project, [System.Collections.I
   if (Test-AnyPath $root @('docs\adr','adr','architecture\adr','decisions','PLAN.md','plan.md')) {
     Add-Recommendation $rows 'supervisor-agents' 'Project has ADR/plan architecture-review signals.' $Index
   }
+  if (Test-AnyPath $root @('sdkconfig','sdkconfig.defaults','CMakeLists.txt','main\CMakeLists.txt','partitions','idf_component.yml','dependencies.lock')) {
+    Add-Recommendation $rows 'esp-idf-firmware' 'ESP-IDF/MCU firmware signals detected.' $Index
+  }
   if (Test-AnyPath $root @('package.json','pnpm-lock.yaml','yarn.lock','vite.config.ts','vite.config.js','next.config.js','src\App.tsx','src\App.jsx')) {
     Add-Recommendation $rows 'frontend-design' 'JavaScript/frontend project signals detected.' $Index
   }
