@@ -306,7 +306,7 @@ function Get-ProjectSkillRecommendations([string]$Project, [System.Collections.I
     Add-Recommendation $rows 'devops' 'Docker or CI/CD signals detected.' $Index
   }
   if (Test-AnyFileName $root @('workflow.json','n8n-test-email-workflow.json') -or (Get-ChildItem -LiteralPath $root -Recurse -File -Filter '*.json' -ErrorAction SilentlyContinue | Select-String -Pattern 'n8n-nodes-base' -Quiet)) {
-    Add-Recommendation $rows 'n8nctl' 'n8n workflow JSON signals detected.' $Index
+    Add-Recommendation $rows 'n8n' 'n8n workflow JSON signals detected.' $Index
   }
   if (Test-AnyPath $root @('README.md','docs') -and (Test-AnyPath $root @('SKILL.md','template-skill\SKILL.md') -or (Get-ChildItem -LiteralPath $root -Recurse -File -Filter 'SKILL.md' -ErrorAction SilentlyContinue | Select-Object -First 1))) {
     Add-Recommendation $rows 'skill-creator' 'Agent Skill authoring signals detected.' $Index

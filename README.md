@@ -169,12 +169,12 @@ Catalogs are for discovery. Review/copy selected skills into `~/.agents/skills` 
 This repository includes bundled skills:
 
 ```text
+skills/project-skill-recommender/SKILL.md
 skills/supervisor-agents/SKILL.md
-skills/n8nctl/SKILL.md
 ```
 
+- `project-skill-recommender` is the default repo-onboarding skill. It scans the current project and recommends/install matching skills from available catalogs.
 - `supervisor-agents` is a multi-agent code and architecture supervision skill for reviewing git diffs against context, implementation plans, and ADRs.
-- `n8nctl` is an agent-friendly n8n workflow validation/deploy/debug skill.
 
 To install a bundled skill into your common source manually, copy it into `~/.agents/skills`:
 
@@ -214,7 +214,7 @@ powershell -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -ProjectPath . 
 Current heuristics look for signals such as:
 
 - `docs/adr`, `adr`, `PLAN.md` → `supervisor-agents` when available
-- n8n workflow JSON containing `n8n-nodes-base` → `n8nctl` when available
+- n8n workflow JSON containing `n8n-nodes-base` → an n8n-related skill when available
 - `SKILL.md` / `template-skill` → `skill-creator` when available
 - `mcp.json`, `.mcp.json`, `mcpServers`, MCP docs → `mcp-builder` when available
 - frontend, Python, Docker/CI, document files → matching skills when available in catalogs
