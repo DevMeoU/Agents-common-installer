@@ -1,7 +1,7 @@
 # Local catalogs and synced assets
 .agents/
 catalog/
-skills/
+# Bundled sample skills are tracked under skills/
 
 # Backups produced by the installer
 *.bak.*

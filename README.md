@@ -162,6 +162,27 @@ With `-UpdateCatalog`, the script clones or updates these public sources into `~
 
 Catalogs are for discovery. Review/copy selected skills into `~/.agents/skills` before syncing.
 
+## Bundled skills
+
+This repository includes a bundled skill:
+
+```text
+skills/supervisor-agents/SKILL.md
+```
+
+`supervisor-agents` is a multi-agent code and architecture supervision skill for reviewing git diffs against context, implementation plans, and ADRs. To install bundled skills into your common source, copy them into `~/.agents/skills`:
+
+```powershell
+New-Item -ItemType Directory -Force ~/.agents/skills | Out-Null
+Copy-Item ./skills/supervisor-agents ~/.agents/skills/supervisor-agents -Recurse -Force
+```
+
+Then sync to your targets:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -Targets claude,openclaw,codex -Force
+```
+
 ## Usage
 
 ### Windows PowerShell
