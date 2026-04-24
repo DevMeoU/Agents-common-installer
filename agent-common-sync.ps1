@@ -1,9 +1,9 @@
-<#
+﻿<#
 .SYNOPSIS
   Common Agent asset syncer: install skills and MCP configs from ~/.agents to multiple AI agents.
 
 .DESCRIPTION
-  DoraeonMall common installer for NôBiOki.
+  DoraeonMall common installer for NoBiOki.
 
   Source layout (all optional):
 
@@ -101,11 +101,32 @@ function Backup-File([string]$Path) {
   return $backup
 }
 
+function ConvertTo-HashtableCompat($InputObject) {
+  if ($null -eq $InputObject) { return $null }
+  if ($InputObject -is [System.Collections.IDictionary]) { return $InputObject }
+  if ($InputObject -is [System.Collections.IDictionary]) {
+    $h = [ordered]@{}
+    foreach ($key in $InputObject.Keys) { $h[$key] = ConvertTo-HashtableCompat $InputObject[$key] }
+    return $h
+  }
+  if ($InputObject -is [System.Collections.IEnumerable] -and $InputObject -isnot [string]) {
+    $arr = @()
+    foreach ($item in $InputObject) { $arr += ,(ConvertTo-HashtableCompat $item) }
+    return $arr
+  }
+  if ($InputObject -is [pscustomobject]) {
+    $h = [ordered]@{}
+    foreach ($prop in $InputObject.PSObject.Properties) { $h[$prop.Name] = ConvertTo-HashtableCompat $prop.Value }
+    return $h
+  }
+  return $InputObject
+}
+
 function Read-JsonFile([string]$Path) {
   if (-not (Test-Path -LiteralPath $Path)) { return [ordered]@{} }
   $raw = Get-Content -LiteralPath $Path -Raw
   if ([string]::IsNullOrWhiteSpace($raw)) { return [ordered]@{} }
-  return $raw | ConvertFrom-Json -AsHashtable
+  return ConvertTo-HashtableCompat ($raw | ConvertFrom-Json)
 }
 
 function Write-JsonFile([string]$Path, $Object) {
@@ -115,10 +136,10 @@ function Write-JsonFile([string]$Path, $Object) {
   $json | Set-Content -LiteralPath $Path -Encoding UTF8
 }
 
-function Ensure-HashtablePath([hashtable]$Root, [string[]]$PathParts) {
+function Ensure-HashtablePath([System.Collections.IDictionary]$Root, [string[]]$PathParts) {
   $cursor = $Root
   foreach ($part in $PathParts) {
-    if (-not $cursor.ContainsKey($part) -or $cursor[$part] -isnot [hashtable]) {
+    if (-not $cursor.Contains($part) -or $cursor[$part] -isnot [System.Collections.IDictionary]) {
       $cursor[$part] = [ordered]@{}
     }
     $cursor = $cursor[$part]
@@ -127,13 +148,13 @@ function Ensure-HashtablePath([hashtable]$Root, [string[]]$PathParts) {
 }
 
 function Normalize-McpServers($Obj) {
-  if ($null -eq $Obj -or $Obj -isnot [hashtable]) { return [ordered]@{} }
-  if ($Obj.ContainsKey('mcpServers') -and $Obj['mcpServers'] -is [hashtable]) { return $Obj['mcpServers'] }
-  if ($Obj.ContainsKey('servers') -and $Obj['servers'] -is [hashtable]) { return $Obj['servers'] }
-  if ($Obj.ContainsKey('mcp') -and $Obj['mcp'] -is [hashtable]) {
+  if ($null -eq $Obj -or $Obj -isnot [System.Collections.IDictionary]) { return [ordered]@{} }
+  if ($Obj.Contains('mcpServers') -and $Obj['mcpServers'] -is [System.Collections.IDictionary]) { return $Obj['mcpServers'] }
+  if ($Obj.Contains('servers') -and $Obj['servers'] -is [System.Collections.IDictionary]) { return $Obj['servers'] }
+  if ($Obj.Contains('mcp') -and $Obj['mcp'] -is [System.Collections.IDictionary]) {
     $mcp = $Obj['mcp']
-    if ($mcp.ContainsKey('servers') -and $mcp['servers'] -is [hashtable]) { return $mcp['servers'] }
-    if ($mcp.ContainsKey('mcpServers') -and $mcp['mcpServers'] -is [hashtable]) { return $mcp['mcpServers'] }
+    if ($mcp.Contains('servers') -and $mcp['servers'] -is [System.Collections.IDictionary]) { return $mcp['servers'] }
+    if ($mcp.Contains('mcpServers') -and $mcp['mcpServers'] -is [System.Collections.IDictionary]) { return $mcp['mcpServers'] }
   }
   return [ordered]@{}
 }
@@ -153,6 +174,14 @@ function Clone-Or-Pull([string]$Url, [string]$Dest) {
 }
 
 function Resolve-Targets([string[]]$Names) {
+  $expanded = @()
+  foreach ($item in $Names) {
+    foreach ($part in ($item -split ',')) {
+      $trimmed = $part.Trim()
+      if (-not [string]::IsNullOrWhiteSpace($trimmed)) { $expanded += $trimmed }
+    }
+  }
+  $Names = $expanded
   if ($Names.Count -eq 1 -and $Names[0].ToLowerInvariant() -eq 'all') { $Names = @($BuiltInTargets.Keys) }
   $resolved = [ordered]@{}
   foreach ($nameRaw in $Names) {
@@ -175,7 +204,7 @@ function Find-SkillDirs([string]$Root) {
   }
 }
 
-function Copy-Skills([string]$Root, [hashtable]$TargetDefs) {
+function Copy-Skills([string]$Root, [System.Collections.IDictionary]$TargetDefs) {
   $skillDirs = @(Find-SkillDirs $Root)
   if ($skillDirs.Count -eq 0) {
     Warn "No skills found under $Root\skills. Put skill folders containing SKILL.md there."
@@ -222,7 +251,7 @@ function Load-All-McpServers([string]$Root) {
   return $merged
 }
 
-function Merge-Mcp-IntoTarget([string]$TargetName, [hashtable]$Def, [hashtable]$McpServers) {
+function Merge-Mcp-IntoTarget([string]$TargetName, [System.Collections.IDictionary]$Def, [System.Collections.IDictionary]$McpServers) {
   if ($McpServers.Keys.Count -eq 0) { return }
   $root = $Def.root
   $configPath = Join-Path $root $Def.mcpFile
@@ -231,7 +260,7 @@ function Merge-Mcp-IntoTarget([string]$TargetName, [hashtable]$Def, [hashtable]$
   switch ($Def.mcpShape) {
     'mcp.servers' { $container = Ensure-HashtablePath $config @('mcp', 'servers') }
     default {
-      if (-not $config.ContainsKey('mcpServers') -or $config['mcpServers'] -isnot [hashtable]) { $config['mcpServers'] = [ordered]@{} }
+      if (-not $config.Contains('mcpServers') -or $config['mcpServers'] -isnot [System.Collections.IDictionary]) { $config['mcpServers'] = [ordered]@{} }
       $container = $config['mcpServers']
     }
   }
@@ -242,7 +271,7 @@ function Merge-Mcp-IntoTarget([string]$TargetName, [hashtable]$Def, [hashtable]$
   Ok "Merged $($McpServers.Keys.Count) MCP server(s) into $TargetName`: $configPath"
 }
 
-function Register-OpenClawSkills([hashtable]$TargetDefs, [array]$Installed) {
+function Register-OpenClawSkills([System.Collections.IDictionary]$TargetDefs, [array]$Installed) {
   if (-not $TargetDefs.Contains('openclaw')) { return }
   $rows = @($Installed | Where-Object { $_.TargetAgent -eq 'openclaw' })
   if ($rows.Count -eq 0) { return }
@@ -299,3 +328,5 @@ if ($mcpServers.Keys.Count -gt 0) {
 
 Register-OpenClawSkills $TargetDefs $installed
 Ok "Done. Restart target agents so new config is picked up."
+
+
