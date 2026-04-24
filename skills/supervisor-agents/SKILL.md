@@ -1,31 +1,25 @@
 ---
 name: supervisor-agents
-description: Multi-agent code and architecture supervision for reviewing git diffs against system context, implementation plans, and ADRs. Use when asked to inspect changes, audit compliance, validate whether code follows a plan, check architectural decision records, or produce objective supervision reports with Summary, Details, and Recommendations. Designed for workflows with roles such as Diff Analyzer, Context Checker, Plan Validator, ADR Auditor, and Aggregator.
+description: Supervise code and architecture changes by reviewing git diffs against system context, implementation plans, and ADRs using distinct reviewer roles. Use this skill whenever the user asks to audit a PR, inspect a git diff, check whether implementation follows a plan, verify architectural decisions, compare code changes against requirements, or produce a compliance report. Especially use it when the request mentions context, plan, ADR, architecture, violations, compliance, multi-agent review, or objective supervision.
 ---
 
 # Supervisor Agents
 
-Use this skill to supervise code and architecture changes without modifying code. Produce an objective report that compares git diff against the available system context, implementation plan, and ADRs.
+This skill guides objective supervision of code and architecture changes. It does not implement fixes. It reads the available evidence, separates the review into independent perspectives, and returns a concise compliance report.
 
-## Operating rules
+## Core behavior
 
-- Do not change source code, plans, ADRs, or configs unless the user explicitly changes the task from supervision to editing.
-- Treat context, plan, and ADR as evidence. If any are missing, state the gap clearly instead of inventing requirements.
-- Prefer repository-local evidence over assumptions.
-- Use parallel agents when available; otherwise simulate the roles as independent sections in one pass.
-- Keep findings traceable to files, diff hunks, plan items, ADR ids, or context excerpts.
-- Separate confirmed violations from risks or missing information.
+- Review only. Do not change code, docs, plans, ADRs, configs, or tests unless the user explicitly changes the task from supervision to editing.
+- Ground every finding in evidence: diff hunks, file paths, plan items, ADR ids, requirements, or documented constraints.
+- Prefer repository-local context over assumptions. If evidence is missing, mark the finding as unknown instead of inventing requirements.
+- Keep the reviewer roles independent. If subagents are available, run them in parallel; otherwise perform the same roles as separate passes.
+- Distinguish confirmed violations from risks, incomplete evidence, and optional improvements.
 
-## Inputs to collect
+## Evidence to collect
 
-Collect these artifacts before judging compliance:
+Start with user-supplied paths or text. If not provided, inspect likely repository locations.
 
-1. **Context**: system description, requirements, constraints, architecture overview, README, design docs, user-provided context.
-2. **Plan**: implementation plan, task list, issue description, milestone, TODO, roadmap, PR description.
-3. **ADR**: architecture decision records and decision logs, usually in `docs/adr`, `adr`, `architecture`, or similar folders.
-4. **Diff**: current git diff, staged diff, branch comparison, or PR diff.
-
-If paths are not supplied, inspect likely locations:
+**Context candidates:**
 
 ```text
 README.md
@@ -33,15 +27,32 @@ AGENTS.md
 CLAUDE.md
 .openclaw/
 docs/
-docs/adr/
-adr/
 architecture/
-plan.md
-PLAN.md
 requirements.md
 ```
 
-Use git commands for diff evidence:
+**Plan candidates:**
+
+```text
+PLAN.md
+plan.md
+TODO.md
+roadmap.md
+docs/plan*
+issue or PR description supplied by the user
+```
+
+**ADR candidates:**
+
+```text
+docs/adr/
+adr/
+architecture/adr/
+decisions/
+docs/architecture/
+```
+
+**Diff commands:**
 
 ```bash
 git status --short
@@ -51,69 +62,82 @@ git diff --cached --find-renames
 git log --oneline --decorate -n 10
 ```
 
-## Multi-agent roles
+If the review target is ambiguous, ask one focused question about the base branch, PR range, or paths. Otherwise continue best-effort and label gaps.
 
-### Agent Diff Analyzer
+## Reviewer roles
 
-Normalize the change set:
+### Diff Analyzer
 
-- List changed files with status: added, modified, deleted, renamed.
-- Summarize each meaningful diff by purpose, touched modules, APIs, schemas, config, tests, docs.
-- Identify high-risk changes: public interfaces, auth, persistence, migrations, dependencies, security, config, CI/CD.
-- Note missing tests or docs when code behavior changes.
+Normalize what changed before judging it.
 
-### Agent Context Checker
+- List changed files and statuses: added, modified, deleted, renamed.
+- Summarize each meaningful change by module, behavior, API, schema, config, docs, and tests.
+- Flag high-risk areas: auth, permissions, persistence, migrations, public APIs, dependencies, CI/CD, secrets, deployment, and generated files.
+- Identify behavior changes without corresponding tests or docs.
 
-Compare diff against context:
+### Context Checker
 
-- Check whether changes preserve stated system boundaries and constraints.
-- Detect mismatches with domain rules, non-goals, platform assumptions, naming conventions, security/privacy expectations.
-- Mark each finding as compliant, violation, risk, or unknown.
+Compare the diff to the system context.
 
-### Agent Plan Validator
+- Check whether changed behavior preserves stated requirements, constraints, non-goals, naming conventions, security/privacy boundaries, and platform assumptions.
+- Mark each point as compliant, violation, risk, or unknown.
+- Avoid using context that is not present in the repository or user prompt.
 
-Compare diff against plan:
+### Plan Validator
+
+Compare the diff to the implementation plan.
 
 - Map changed files and behavior to plan steps.
-- Identify plan items implemented, partially implemented, missing, or out-of-scope.
-- Flag work that appears unrelated to the plan unless justified.
-- Identify plan updates needed when implementation intentionally diverges.
+- Identify plan items that are complete, partial, missing, or out of scope.
+- Flag unrelated work unless the diff or user prompt justifies it.
+- Recommend plan updates when the implementation is valid but intentionally diverges.
 
-### Agent ADR Auditor
+### ADR Auditor
 
-Compare diff against ADRs:
+Compare the diff to architectural decisions.
 
-- Extract relevant ADR decisions, rationale, constraints, and consequences.
-- Verify code follows selected technologies, boundaries, data flow, integration rules, deployment assumptions, and trade-offs.
-- Flag contradictions and ADR drift.
-- Recommend ADR updates only when the implementation is valid but the decision record is stale or incomplete.
+- Extract relevant decisions, rationale, constraints, and consequences from ADRs.
+- Check selected technologies, data flow, boundaries, integration style, deployment assumptions, and trade-offs.
+- Flag ADR drift when code contradicts a still-active decision.
+- Recommend ADR updates when code is reasonable but decisions are stale or incomplete.
 
-### Agent Aggregator
+### Aggregator
 
-Synthesize the independent findings:
+Produce the final supervision report.
 
 - Deduplicate overlapping findings.
-- Prioritize by impact: blocker, high, medium, low, informational.
-- Preserve dissent or uncertainty when evidence is incomplete.
-- Produce final report in the required format.
+- Prioritize by impact: Blocker, High, Medium, Low, Informational.
+- Preserve uncertainty when context, plan, ADRs, tests, or diff range are incomplete.
+- Include actionable recommendations without patching files.
 
-## Report format
+## Severity rubric
 
-Use this exact structure unless the user requests another format:
+- **Blocker**: Violates explicit requirements, security boundaries, data integrity, production safety, or a core active ADR.
+- **High**: Likely functional regression, incompatible interface, missing migration, or major plan divergence.
+- **Medium**: Partial implementation, missing tests/docs for meaningful behavior, or unclear architecture drift.
+- **Low**: Minor naming, organization, documentation, or cleanup mismatch.
+- **Informational**: Useful observation with no required action.
+
+## Report structure
+
+Always use this structure unless the user asks for another format:
 
 ```markdown
 ## Summary
 
 - Overall status: Compliant | Mostly compliant | Mixed | Non-compliant | Insufficient evidence
-- High-level assessment: <1-3 bullets>
+- High-level assessment:
+  - <bullet>
+  - <bullet>
 - Key risks: <bullets or "None found">
 
 ## Details
 
 ### Diff overview
 
-- Changed files: <count/list>
-- Main change themes: <bullets>
+- Changed files: <count and important files>
+- Main change themes:
+  - <bullet>
 
 ### Compliance
 
@@ -123,7 +147,7 @@ Use this exact structure unless the user requests another format:
 
 ### Violations
 
-- <Finding title>
+- <Finding title or "No confirmed violations found">
   - Severity: Blocker | High | Medium | Low
   - Evidence: <file/diff/context/plan/ADR reference>
   - Expected: <from context/plan/ADR>
@@ -142,30 +166,9 @@ Use this exact structure unless the user requests another format:
 3. <ADR/plan update suggestion if needed>
 ```
 
-If there are no violations, write `No confirmed violations found` under Violations.
+## Example trigger prompts
 
-## Severity rubric
-
-- **Blocker**: Breaks explicit requirement, security boundary, data integrity, production safety, or core ADR decision.
-- **High**: Likely functional regression, incompatible interface, missing migration, or major plan divergence.
-- **Medium**: Partial implementation, missing tests/docs for meaningful behavior, unclear architecture drift.
-- **Low**: Naming, organization, minor documentation mismatch, non-critical cleanup.
-- **Informational**: Observation without required action.
-
-## Recommended workflow
-
-1. Read user-supplied context, plan, and ADR paths first.
-2. If missing, inspect likely repository docs and state what was found.
-3. Run git status and diff commands.
-4. Analyze with the five roles.
-5. Produce the final report only; do not patch files.
-
-## Escalation rules
-
-Ask one focused question only if supervision is impossible without it, for example:
-
-- No git repository or diff exists.
-- No context/plan/ADR is available and the user expects strict compliance judgment.
-- The requested base branch or PR range is ambiguous.
-
-Otherwise continue with best-effort analysis and clearly label unknowns.
+- "Review this PR against the plan and ADRs."
+- "Analyze the git diff and report architecture violations."
+- "Check whether these changes comply with the system context."
+- "Run a multi-agent supervision review for context, plan, ADR, and diff."
