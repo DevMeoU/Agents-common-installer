@@ -18,7 +18,7 @@
 
   Built-in targets:
     claude   -> ~/.claude/skills, ~/.claude/settings.json:mcpServers
-    openclaw -> ~/.openclaw/skills, ~/.openclaw/openclaw.json:mcp.servers + skills.entries
+    openclaw -> ~/.openclaw/skills only by default (does not edit openclaw.json unless -AllowOpenClawConfigWrite is set)
     codex    -> ~/.codex/skills, ~/.codex/config.json:mcpServers if config.json exists, otherwise ~/.codex/mcp.json
     cursor   -> ~/.cursor/skills, ~/.cursor/mcp.json
     gemini   -> ~/.gemini/skills, ~/.gemini/settings.json:mcpServers if settings exists, otherwise ~/.gemini/mcp.json
@@ -67,7 +67,8 @@ param(
   [switch]$UpdateCatalog,
   [switch]$Force,
   [switch]$DryRun,
-  [switch]$ListTargets
+  [switch]$ListTargets,
+  [switch]$AllowOpenClawConfigWrite
 )
 
 Set-StrictMode -Version Latest
@@ -79,7 +80,7 @@ function Warn($msg) { Write-Host "[WARN] $msg" -ForegroundColor Yellow }
 
 $BuiltInTargets = [ordered]@{
   claude = [ordered]@{ root = (Join-Path $HOME '.claude'); skills = 'skills'; mcpFile = 'settings.json'; mcpShape = 'mcpServers' }
-  openclaw = [ordered]@{ root = (Join-Path $HOME '.openclaw'); skills = 'skills'; mcpFile = 'openclaw.json'; mcpShape = 'mcp.servers'; registerSkills = $true }
+  openclaw = [ordered]@{ root = (Join-Path $HOME '.openclaw'); skills = 'skills'; mcpFile = 'openclaw.json'; mcpShape = 'mcp.servers'; registerSkills = $true; skipConfigByDefault = $true }
   codex = [ordered]@{ root = (Join-Path $HOME '.codex'); skills = 'skills'; mcpFile = 'mcp.json'; mcpShape = 'mcpServers' }
   cursor = [ordered]@{ root = (Join-Path $HOME '.cursor'); skills = 'skills'; mcpFile = 'mcp.json'; mcpShape = 'mcpServers' }
   gemini = [ordered]@{ root = (Join-Path $HOME '.gemini'); skills = 'skills'; mcpFile = 'mcp.json'; mcpShape = 'mcpServers' }
@@ -131,6 +132,7 @@ function Read-JsonFile([string]$Path) {
 
 function Write-JsonFile([string]$Path, $Object) {
   $json = $Object | ConvertTo-Json -Depth 100
+  try { $null = $json | ConvertFrom-Json } catch { throw "Refusing to write invalid JSON to $Path`: $($_.Exception.Message)" }
   if ($DryRun) { Info "Would write JSON: $Path"; return }
   Ensure-Dir (Split-Path -Parent $Path)
   $json | Set-Content -LiteralPath $Path -Encoding UTF8
@@ -253,6 +255,10 @@ function Load-All-McpServers([string]$Root) {
 
 function Merge-Mcp-IntoTarget([string]$TargetName, [System.Collections.IDictionary]$Def, [System.Collections.IDictionary]$McpServers) {
   if ($McpServers.Keys.Count -eq 0) { return }
+  if ($TargetName -eq 'openclaw' -and -not $AllowOpenClawConfigWrite) {
+    Warn "Skipping OpenClaw MCP config write for safety. Use -AllowOpenClawConfigWrite only after validating OpenClaw's current config schema."
+    return
+  }
   $root = $Def.root
   $configPath = Join-Path $root $Def.mcpFile
   $config = Read-JsonFile $configPath
@@ -273,6 +279,10 @@ function Merge-Mcp-IntoTarget([string]$TargetName, [System.Collections.IDictiona
 
 function Register-OpenClawSkills([System.Collections.IDictionary]$TargetDefs, [array]$Installed) {
   if (-not $TargetDefs.Contains('openclaw')) { return }
+  if (-not $AllowOpenClawConfigWrite) {
+    Warn "Copied OpenClaw skills, but did not edit openclaw.json. Use OpenClaw's supported skill configuration flow or rerun with -AllowOpenClawConfigWrite after validation."
+    return
+  }
   $rows = @($Installed | Where-Object { $_.TargetAgent -eq 'openclaw' })
   if ($rows.Count -eq 0) { return }
 
@@ -292,7 +302,8 @@ if ($ListTargets) {
   Write-Host "Built-in targets:" -ForegroundColor Cyan
   foreach ($name in $BuiltInTargets.Keys) {
     $d = $BuiltInTargets[$name]
-    Write-Host "- $name -> root=$($d.root), skills=$($d.skills), mcp=$($d.mcpFile):$($d.mcpShape)"
+    $note = if ($name -eq 'openclaw') { ' config write guarded by -AllowOpenClawConfigWrite' } else { '' }
+    Write-Host "- $name -> root=$($d.root), skills=$($d.skills), mcp=$($d.mcpFile):$($d.mcpShape)$note"
   }
   exit 0
 }

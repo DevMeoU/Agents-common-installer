@@ -130,7 +130,7 @@ Default built-ins:
 
 ```text
 claude   -> ~/.claude/skills,   ~/.claude/settings.json:mcpServers
-openclaw -> ~/.openclaw/skills, ~/.openclaw/openclaw.json:mcp.servers + skills.entries
+openclaw -> ~/.openclaw/skills only by default; openclaw.json writes are guarded by `-AllowOpenClawConfigWrite`
 codex    -> ~/.codex/skills,    ~/.codex/mcp.json:mcpServers
 cursor   -> ~/.cursor/skills,   ~/.cursor/mcp.json:mcpServers
 gemini   -> ~/.gemini/skills,   ~/.gemini/mcp.json:mcpServers
@@ -214,11 +214,15 @@ pwsh -NoProfile -File ./agent-common-sync.ps1 -Targets claude,openclaw -Force
 -Force              Overwrite existing target skill folders
 -DryRun             Show planned actions without writing
 -ListTargets        Print built-in target definitions
+-AllowOpenClawConfigWrite
+                    Allow experimental writes to ~/.openclaw/openclaw.json. Off by default for safety.
 ```
 
 ## Safety
 
 - Existing JSON config files are backed up before modification using `*.bak.YYYYMMDD-HHMMSS`.
+- JSON output is parsed before writing; invalid JSON is refused.
+- OpenClaw config is schema-sensitive, so `openclaw.json` is not edited by default. OpenClaw skills are copied to `~/.openclaw/skills`; use OpenClaw's supported configuration flow to enable them. Only use `-AllowOpenClawConfigWrite` after validating your OpenClaw config schema.
 - Use `-DryRun` before syncing if unsure.
 - The script does not auto-enable arbitrary external services or install package dependencies. MCP command definitions are copied as config only.
 - Review public catalog content before copying skills into `~/.agents/skills`.
