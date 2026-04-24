@@ -166,13 +166,17 @@ Catalogs are for discovery. Review/copy selected skills into `~/.agents/skills` 
 
 ## Bundled skills
 
-This repository includes a bundled skill:
+This repository includes bundled skills:
 
 ```text
 skills/supervisor-agents/SKILL.md
+skills/n8nctl/SKILL.md
 ```
 
-`supervisor-agents` is a multi-agent code and architecture supervision skill for reviewing git diffs against context, implementation plans, and ADRs. To install bundled skills into your common source, copy them into `~/.agents/skills`:
+- `supervisor-agents` is a multi-agent code and architecture supervision skill for reviewing git diffs against context, implementation plans, and ADRs.
+- `n8nctl` is an agent-friendly n8n workflow validation/deploy/debug skill.
+
+To install a bundled skill into your common source manually, copy it into `~/.agents/skills`:
 
 ```powershell
 New-Item -ItemType Directory -Force ~/.agents/skills | Out-Null
@@ -184,6 +188,36 @@ Then sync to your targets:
 ```powershell
 powershell -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -Targets claude,openclaw,codex -Force
 ```
+
+## Project-based skill recommendations
+
+The installer can inspect a project and recommend only skills that actually exist in its catalog roots (`./skills` and `~/.agents/catalog` by default). It does **not** auto-install every catalog skill.
+
+Recommend only:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -ProjectPath D:\Workspace\Project\my-app -RecommendSkills
+```
+
+Recommend and install matching skills into `~/.agents/skills`, then sync targets:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -ProjectPath D:\Workspace\Project\my-app -InstallRecommendedSkills -Targets claude,openclaw,codex -Force
+```
+
+Use custom catalog roots:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -ProjectPath . -RecommendSkills -SkillCatalogRoots .\skills,$HOME\.agents\catalog
+```
+
+Current heuristics look for signals such as:
+
+- `docs/adr`, `adr`, `PLAN.md` → `supervisor-agents` when available
+- n8n workflow JSON containing `n8n-nodes-base` → `n8nctl` when available
+- `SKILL.md` / `template-skill` → `skill-creator` when available
+- `mcp.json`, `.mcp.json`, `mcpServers`, MCP docs → `mcp-builder` when available
+- frontend, Python, Docker/CI, document files → matching skills when available in catalogs
 
 ## Usage
 
@@ -233,6 +267,12 @@ pwsh -NoProfile -File ./agent-common-sync.ps1 -Targets claude,openclaw -Force
 ```text
 -Source <path>       Source directory, default: ~/.agents
 -Targets <names>    Target agents, default: claude,openclaw. Use all for built-ins.
+-ProjectPath <path> Project directory to inspect for skill recommendations
+-RecommendSkills    Print installable skill recommendations for -ProjectPath
+-InstallRecommendedSkills
+                    Copy recommended skills into ~/.agents/skills before syncing targets
+-SkillCatalogRoots <paths>
+                    Search roots for installable skills, default: ./skills and ~/.agents/catalog
 -UpdateCatalog      Clone/update public catalogs
 -Force              Overwrite existing target skill folders
 -DryRun             Show planned actions without writing

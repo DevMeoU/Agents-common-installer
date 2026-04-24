@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
   Common Agent asset syncer: install skills and MCP configs from ~/.agents to multiple AI agents.
 
@@ -38,6 +38,18 @@
             -Targets all
             -Targets claude,my-agent
 
+.PARAMETER ProjectPath
+  Project directory to inspect when recommending skills.
+
+.PARAMETER RecommendSkills
+  Inspect -ProjectPath and print skill recommendations that exist in catalog roots.
+
+.PARAMETER InstallRecommendedSkills
+  Copy recommended skills into ~/.agents/skills before syncing targets.
+
+.PARAMETER SkillCatalogRoots
+  Skill search roots. Defaults to this repo's ./skills and ~/.agents/catalog.
+
 .PARAMETER UpdateCatalog
   Clone/update known public catalogs into ~/.agents/catalog.
 
@@ -51,19 +63,26 @@
   Show built-in target definitions and exit.
 
 .EXAMPLE
+  powershell -ExecutionPolicy Bypass -File ~/agent-common-sync.ps1 -ProjectPath ./my-app -RecommendSkills
+
+.EXAMPLE
+  powershell -ExecutionPolicy Bypass -File ~/agent-common-sync.ps1 -ProjectPath ./my-app -InstallRecommendedSkills -Targets claude,openclaw -Force
+
+.EXAMPLE
   powershell -ExecutionPolicy Bypass -File ~/agent-common-sync.ps1 -UpdateCatalog
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File ~/agent-common-sync.ps1 -Targets all -Force
-
-.EXAMPLE
-  powershell -ExecutionPolicy Bypass -File ~/agent-common-sync.ps1 -Targets claude,openclaw,codex -DryRun
 #>
 
 [CmdletBinding()]
 param(
   [string]$Source = (Join-Path $HOME '.agents'),
   [string[]]$Targets = @('claude', 'openclaw'),
+  [string]$ProjectPath,
+  [switch]$RecommendSkills,
+  [switch]$InstallRecommendedSkills,
+  [string[]]$SkillCatalogRoots,
   [switch]$UpdateCatalog,
   [switch]$Force,
   [switch]$DryRun,
@@ -77,6 +96,8 @@ $ErrorActionPreference = 'Stop'
 function Info($msg) { Write-Host "[INFO] $msg" -ForegroundColor Cyan }
 function Ok($msg) { Write-Host "[ OK ] $msg" -ForegroundColor Green }
 function Warn($msg) { Write-Host "[WARN] $msg" -ForegroundColor Yellow }
+
+$ScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 $BuiltInTargets = [ordered]@{
   claude = [ordered]@{ root = (Join-Path $HOME '.claude'); skills = 'skills'; mcpFile = 'settings.json'; mcpShape = 'mcpServers' }
@@ -105,11 +126,6 @@ function Backup-File([string]$Path) {
 function ConvertTo-HashtableCompat($InputObject) {
   if ($null -eq $InputObject) { return $null }
   if ($InputObject -is [System.Collections.IDictionary]) { return $InputObject }
-  if ($InputObject -is [System.Collections.IDictionary]) {
-    $h = [ordered]@{}
-    foreach ($key in $InputObject.Keys) { $h[$key] = ConvertTo-HashtableCompat $InputObject[$key] }
-    return $h
-  }
   if ($InputObject -is [System.Collections.IEnumerable] -and $InputObject -isnot [string]) {
     $arr = @()
     foreach ($item in $InputObject) { $arr += ,(ConvertTo-HashtableCompat $item) }
@@ -141,9 +157,7 @@ function Write-JsonFile([string]$Path, $Object) {
 function Ensure-HashtablePath([System.Collections.IDictionary]$Root, [string[]]$PathParts) {
   $cursor = $Root
   foreach ($part in $PathParts) {
-    if (-not $cursor.Contains($part) -or $cursor[$part] -isnot [System.Collections.IDictionary]) {
-      $cursor[$part] = [ordered]@{}
-    }
+    if (-not $cursor.Contains($part) -or $cursor[$part] -isnot [System.Collections.IDictionary]) { $cursor[$part] = [ordered]@{} }
     $cursor = $cursor[$part]
   }
   return $cursor
@@ -189,30 +203,33 @@ function Resolve-Targets([string[]]$Names) {
   foreach ($nameRaw in $Names) {
     $name = $nameRaw.Trim().ToLowerInvariant()
     if ([string]::IsNullOrWhiteSpace($name)) { continue }
-    if ($BuiltInTargets.Contains($name)) {
-      $resolved[$name] = $BuiltInTargets[$name]
-    } else {
-      $resolved[$name] = [ordered]@{ root = (Join-Path $HOME ".$name"); skills = 'skills'; mcpFile = 'mcp.json'; mcpShape = 'mcpServers' }
-    }
+    if ($BuiltInTargets.Contains($name)) { $resolved[$name] = $BuiltInTargets[$name] }
+    else { $resolved[$name] = [ordered]@{ root = (Join-Path $HOME ".$name"); skills = 'skills'; mcpFile = 'mcp.json'; mcpShape = 'mcpServers' } }
   }
   return $resolved
 }
 
 function Find-SkillDirs([string]$Root) {
+  $found = @()
+  if (-not (Test-Path -LiteralPath $Root)) { return @() }
+  if (Test-Path -LiteralPath (Join-Path $Root 'SKILL.md')) { return @(Get-Item -LiteralPath $Root) }
   $skillsRoot = Join-Path $Root 'skills'
-  if (-not (Test-Path -LiteralPath $skillsRoot)) { return @() }
-  return Get-ChildItem -LiteralPath $skillsRoot -Directory -Recurse | Where-Object {
-    Test-Path -LiteralPath (Join-Path $_.FullName 'SKILL.md')
+  if (Test-Path -LiteralPath $skillsRoot) {
+    $found += @(Get-ChildItem -LiteralPath $skillsRoot -Directory -Recurse | Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'SKILL.md') })
   }
+  $found += @(Get-ChildItem -LiteralPath $Root -Directory -Recurse | Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'SKILL.md') })
+  $seen = @{}
+  $unique = @()
+  foreach ($item in $found) {
+    $key = $item.FullName.ToLowerInvariant()
+    if (-not $seen.Contains($key)) { $seen[$key] = $true; $unique += $item }
+  }
+  return $unique
 }
 
 function Copy-Skills([string]$Root, [System.Collections.IDictionary]$TargetDefs) {
   $skillDirs = @(Find-SkillDirs $Root)
-  if ($skillDirs.Count -eq 0) {
-    Warn "No skills found under $Root\skills. Put skill folders containing SKILL.md there."
-    return @()
-  }
-
+  if ($skillDirs.Count -eq 0) { Warn "No skills found under $Root. Put skill folders containing SKILL.md there."; return @() }
   $installed = @()
   foreach ($skill in $skillDirs) {
     $name = $skill.Name
@@ -220,10 +237,7 @@ function Copy-Skills([string]$Root, [System.Collections.IDictionary]$TargetDefs)
       $def = $TargetDefs[$targetName]
       $targetRoot = Join-Path $def.root $def.skills
       $dest = Join-Path $targetRoot $name
-      if ((Test-Path -LiteralPath $dest) -and -not $Force) {
-        Warn "Skill exists, skipping without -Force: $dest"
-        continue
-      }
+      if ((Test-Path -LiteralPath $dest) -and -not $Force) { Warn "Skill exists, skipping without -Force: $dest"; continue }
       Info "Installing skill $name -> $targetName`: $dest"
       if (-not $DryRun) {
         Ensure-Dir $targetRoot
@@ -236,13 +250,99 @@ function Copy-Skills([string]$Root, [System.Collections.IDictionary]$TargetDefs)
   return $installed
 }
 
+function Get-DefaultSkillCatalogRoots([string]$SourceRoot) {
+  $roots = @()
+  $repoSkills = Join-Path $ScriptRoot 'skills'
+  $sourceCatalog = Join-Path $SourceRoot 'catalog'
+  if (Test-Path -LiteralPath $repoSkills) { $roots += $repoSkills }
+  if (Test-Path -LiteralPath $sourceCatalog) { $roots += $sourceCatalog }
+  return $roots
+}
+
+function Get-SkillIndex([string[]]$Roots) {
+  $index = @{}
+  foreach ($root in $Roots) {
+    if (-not (Test-Path -LiteralPath $root)) { continue }
+    foreach ($skill in @(Find-SkillDirs $root)) {
+      $name = $skill.Name.ToLowerInvariant()
+      if (-not $index.ContainsKey($name)) { $index[$name] = $skill.FullName }
+    }
+  }
+  return $index
+}
+
+function Test-AnyPath([string]$Root, [string[]]$RelativePaths) {
+  foreach ($rel in $RelativePaths) { if (Test-Path -LiteralPath (Join-Path $Root $rel)) { return $true } }
+  return $false
+}
+
+function Test-AnyFileName([string]$Root, [string[]]$Names) {
+  foreach ($name in $Names) {
+    if (Get-ChildItem -LiteralPath $Root -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -ieq $name } | Select-Object -First 1) { return $true }
+  }
+  return $false
+}
+
+function Add-Recommendation([System.Collections.ArrayList]$Rows, [string]$Name, [string]$Reason, [System.Collections.IDictionary]$Index) {
+  $key = $Name.ToLowerInvariant()
+  if ($Index.Contains($key)) { [void]$Rows.Add([pscustomobject]@{ Skill = $key; Reason = $Reason; Source = $Index[$key] }) }
+}
+
+function Get-ProjectSkillRecommendations([string]$Project, [System.Collections.IDictionary]$Index) {
+  if ([string]::IsNullOrWhiteSpace($Project)) { throw '-ProjectPath is required for -RecommendSkills or -InstallRecommendedSkills.' }
+  $root = (Resolve-Path -LiteralPath $Project).Path
+  $rows = New-Object System.Collections.ArrayList
+
+  if (Test-AnyPath $root @('docs\adr','adr','architecture\adr','decisions','PLAN.md','plan.md')) {
+    Add-Recommendation $rows 'supervisor-agents' 'Project has ADR/plan architecture-review signals.' $Index
+  }
+  if (Test-AnyPath $root @('package.json','pnpm-lock.yaml','yarn.lock','vite.config.ts','vite.config.js','next.config.js','src\App.tsx','src\App.jsx')) {
+    Add-Recommendation $rows 'frontend-design' 'JavaScript/frontend project signals detected.' $Index
+  }
+  if (Test-AnyPath $root @('pyproject.toml','requirements.txt','setup.py','setup.cfg','Pipfile')) {
+    Add-Recommendation $rows 'python' 'Python project signals detected.' $Index
+  }
+  if (Test-AnyPath $root @('Dockerfile','docker-compose.yml','docker-compose.yaml','.github\workflows')) {
+    Add-Recommendation $rows 'devops' 'Docker or CI/CD signals detected.' $Index
+  }
+  if (Test-AnyFileName $root @('workflow.json','n8n-test-email-workflow.json') -or (Get-ChildItem -LiteralPath $root -Recurse -File -Filter '*.json' -ErrorAction SilentlyContinue | Select-String -Pattern 'n8n-nodes-base' -Quiet)) {
+    Add-Recommendation $rows 'n8nctl' 'n8n workflow JSON signals detected.' $Index
+  }
+  if (Test-AnyPath $root @('README.md','docs') -and (Test-AnyPath $root @('SKILL.md','template-skill\SKILL.md') -or (Get-ChildItem -LiteralPath $root -Recurse -File -Filter 'SKILL.md' -ErrorAction SilentlyContinue | Select-Object -First 1))) {
+    Add-Recommendation $rows 'skill-creator' 'Agent Skill authoring signals detected.' $Index
+  }
+  if (Test-AnyPath $root @('mcp.json','.mcp.json') -or (Get-ChildItem -LiteralPath $root -Recurse -File -ErrorAction SilentlyContinue | Select-String -Pattern 'Model Context Protocol|mcpServers' -Quiet)) {
+    Add-Recommendation $rows 'mcp-builder' 'MCP config or documentation signals detected.' $Index
+  }
+  if (Test-AnyFileName $root @('*.docx')) { Add-Recommendation $rows 'docx' 'Word document files detected.' $Index }
+  if (Test-AnyFileName $root @('*.xlsx')) { Add-Recommendation $rows 'xlsx' 'Excel workbook files detected.' $Index }
+  if (Test-AnyFileName $root @('*.pptx')) { Add-Recommendation $rows 'pptx' 'PowerPoint files detected.' $Index }
+  if (Test-AnyFileName $root @('*.pdf')) { Add-Recommendation $rows 'pdf' 'PDF files detected.' $Index }
+
+  $seen = @{}
+  $unique = @()
+  foreach ($row in $rows) {
+    if (-not $seen.Contains($row.Skill)) { $seen[$row.Skill] = $true; $unique += $row }
+  }
+  return $unique
+}
+
+function Install-RecommendedSkills([array]$Recommendations, [string]$SourceRoot) {
+  $destRoot = Join-Path $SourceRoot 'skills'
+  Ensure-Dir $destRoot
+  foreach ($rec in $Recommendations) {
+    $dest = Join-Path $destRoot $rec.Skill
+    if ((Test-Path -LiteralPath $dest) -and -not $Force) { Warn "Recommended skill exists, skipping without -Force: $dest"; continue }
+    Info "Installing recommended skill $($rec.Skill) -> $dest"
+    if (-not $DryRun) {
+      if (Test-Path -LiteralPath $dest) { Remove-Item -LiteralPath $dest -Recurse -Force }
+      Copy-Item -LiteralPath $rec.Source -Destination $dest -Recurse -Force
+    }
+  }
+}
+
 function Load-All-McpServers([string]$Root) {
-  $candidates = @(
-    (Join-Path $Root 'mcp.json'),
-    (Join-Path $Root '.mcp.json'),
-    (Join-Path $Root 'mcp\servers.json'),
-    (Join-Path $Root 'mcp\mcp.json')
-  )
+  $candidates = @((Join-Path $Root 'mcp.json'), (Join-Path $Root '.mcp.json'), (Join-Path $Root 'mcp\servers.json'), (Join-Path $Root 'mcp\mcp.json'))
   $merged = [ordered]@{}
   foreach ($file in $candidates) {
     if (-not (Test-Path -LiteralPath $file)) { continue }
@@ -255,14 +355,9 @@ function Load-All-McpServers([string]$Root) {
 
 function Merge-Mcp-IntoTarget([string]$TargetName, [System.Collections.IDictionary]$Def, [System.Collections.IDictionary]$McpServers) {
   if ($McpServers.Keys.Count -eq 0) { return }
-  if ($TargetName -eq 'openclaw' -and -not $AllowOpenClawConfigWrite) {
-    Warn "Skipping OpenClaw MCP config write for safety. Use -AllowOpenClawConfigWrite only after validating OpenClaw's current config schema."
-    return
-  }
-  $root = $Def.root
-  $configPath = Join-Path $root $Def.mcpFile
+  if ($TargetName -eq 'openclaw' -and -not $AllowOpenClawConfigWrite) { Warn "Skipping OpenClaw MCP config write for safety. Use -AllowOpenClawConfigWrite only after validating OpenClaw's current config schema."; return }
+  $configPath = Join-Path $Def.root $Def.mcpFile
   $config = Read-JsonFile $configPath
-
   switch ($Def.mcpShape) {
     'mcp.servers' { $container = Ensure-HashtablePath $config @('mcp', 'servers') }
     default {
@@ -270,7 +365,6 @@ function Merge-Mcp-IntoTarget([string]$TargetName, [System.Collections.IDictiona
       $container = $config['mcpServers']
     }
   }
-
   foreach ($name in $McpServers.Keys) { $container[$name] = $McpServers[$name] }
   Backup-File $configPath | Out-Null
   Write-JsonFile $configPath $config
@@ -279,20 +373,14 @@ function Merge-Mcp-IntoTarget([string]$TargetName, [System.Collections.IDictiona
 
 function Register-OpenClawSkills([System.Collections.IDictionary]$TargetDefs, [array]$Installed) {
   if (-not $TargetDefs.Contains('openclaw')) { return }
-  if (-not $AllowOpenClawConfigWrite) {
-    Warn "Copied OpenClaw skills, but did not edit openclaw.json. Use OpenClaw's supported skill configuration flow or rerun with -AllowOpenClawConfigWrite after validation."
-    return
-  }
+  if (-not $AllowOpenClawConfigWrite) { Warn "Copied OpenClaw skills, but did not edit openclaw.json. Use OpenClaw's supported skill configuration flow or rerun with -AllowOpenClawConfigWrite after validation."; return }
   $rows = @($Installed | Where-Object { $_.TargetAgent -eq 'openclaw' })
   if ($rows.Count -eq 0) { return }
-
   $def = $TargetDefs['openclaw']
   $configPath = Join-Path $def.root $def.mcpFile
   $config = Read-JsonFile $configPath
   $entries = Ensure-HashtablePath $config @('skills', 'entries')
-  foreach ($row in $rows) {
-    $entries[$row.Name] = [ordered]@{ enabled = $true; path = $row.Target }
-  }
+  foreach ($row in $rows) { $entries[$row.Name] = [ordered]@{ enabled = $true; path = $row.Target } }
   Backup-File $configPath | Out-Null
   Write-JsonFile $configPath $config
   Ok "Registered copied OpenClaw skills in $configPath"
@@ -323,23 +411,27 @@ if ($UpdateCatalog) {
   Ok "Catalog update step finished. Review/copy chosen skills into $Source\skills before syncing."
 }
 
+if ($RecommendSkills -or $InstallRecommendedSkills) {
+  $roots = if ($SkillCatalogRoots -and $SkillCatalogRoots.Count -gt 0) { $SkillCatalogRoots } else { Get-DefaultSkillCatalogRoots $Source }
+  Info "Skill catalog roots: $($roots -join ', ')"
+  $index = Get-SkillIndex $roots
+  $recommendations = @(Get-ProjectSkillRecommendations $ProjectPath $index)
+  if ($recommendations.Count -eq 0) { Warn "No installable skill recommendations found. Run -UpdateCatalog or add skills to ~/.agents/catalog or ./skills." }
+  else {
+    Write-Host "Recommended skills:" -ForegroundColor Cyan
+    $recommendations | Format-Table Skill, Reason, Source -AutoSize
+    if ($InstallRecommendedSkills) { Install-RecommendedSkills $recommendations $Source }
+  }
+  if ($RecommendSkills -and -not $InstallRecommendedSkills -and -not $UpdateCatalog) { exit 0 }
+}
+
 $TargetDefs = Resolve-Targets $Targets
 Info "Targets: $($TargetDefs.Keys -join ', ')"
-foreach ($name in $TargetDefs.Keys) {
-  Ensure-Dir $TargetDefs[$name].root
-  Ensure-Dir (Join-Path $TargetDefs[$name].root $TargetDefs[$name].skills)
-}
+foreach ($name in $TargetDefs.Keys) { Ensure-Dir $TargetDefs[$name].root; Ensure-Dir (Join-Path $TargetDefs[$name].root $TargetDefs[$name].skills) }
 
 $installed = @(Copy-Skills $Source $TargetDefs)
 $mcpServers = Load-All-McpServers $Source
-
-if ($mcpServers.Keys.Count -gt 0) {
-  foreach ($name in $TargetDefs.Keys) { Merge-Mcp-IntoTarget $name $TargetDefs[$name] $mcpServers }
-} else {
-  Warn "No MCP config found in ~/.agents. Add ~/.agents/mcp.json with a mcpServers object to sync MCP."
-}
-
+if ($mcpServers.Keys.Count -gt 0) { foreach ($name in $TargetDefs.Keys) { Merge-Mcp-IntoTarget $name $TargetDefs[$name] $mcpServers } }
+else { Warn "No MCP config found in ~/.agents. Add ~/.agents/mcp.json with a mcpServers object to sync MCP." }
 Register-OpenClawSkills $TargetDefs $installed
 Ok "Done. Restart target agents so new config is picked up."
-
-
