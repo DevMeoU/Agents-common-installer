@@ -53,6 +53,7 @@ All source content is optional. The script creates `~/.agents` if missing.
   mcp/
     servers.json
     mcp.json
+    code-review-graph.json  # optional preset created by -InstallCodeReviewGraphMcp
   catalog/
 ```
 
@@ -161,8 +162,44 @@ With `-UpdateCatalog`, the script clones or updates these public sources into `~
 - <https://github.com/DevMeoU/supervisor-agents-skill>
 - <https://github.com/DevMeoU/template-for-skills-agent>
 - <https://github.com/modelcontextprotocol/servers>
+- <https://github.com/DevMeoU/code-review-graph>
 
 Catalogs are for discovery. Review/copy selected skills into `~/.agents/skills` before syncing.
+
+## code-review-graph integration
+
+[`code-review-graph`](https://github.com/DevMeoU/code-review-graph) builds a local code knowledge graph and exposes it to coding agents through MCP.
+
+This installer supports it in two ways:
+
+1. `-UpdateCatalog` clones/updates the repository into `~/.agents/catalog/code-review-graph` for discovery, including its bundled skills.
+2. Normal sync runs create/sync this MCP preset by default at `~/.agents/mcp/code-review-graph.json`:
+
+```json
+{
+  "mcpServers": {
+    "code-review-graph": {
+      "command": "uvx",
+      "args": ["code-review-graph", "serve"]
+    }
+  }
+}
+```
+
+Then sync it into your agent targets:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -Targets claude,codex,cursor -Force
+```
+
+If you only want recommendations and no MCP writes, use `-RecommendSkills` by itself or add `-SkipCodeReviewGraphMcp` to any sync run.
+
+Notes:
+
+- Requires Python 3.10+ and preferably `uv`/`uvx` available on PATH.
+- The installer only writes MCP config; it does not run the package or build graphs automatically.
+- After syncing, restart the target agent/editor, then run `code-review-graph build` in a project or ask the agent to build the code review graph.
+- OpenClaw MCP config writes are still guarded; add `-AllowOpenClawConfigWrite` only after validating the current OpenClaw config schema.
 
 ## Bundled skills
 
@@ -171,12 +208,18 @@ This repository includes bundled skills:
 ```text
 skills/project-skill-recommender/SKILL.md
 skills/supervisor-agents/SKILL.md
+skills/scrum-master/SKILL.md
+skills/senior-pm/SKILL.md
 skills/esp-idf-firmware/SKILL.md
 ```
 
 - `project-skill-recommender` is the default repo-onboarding skill. It scans the current project and recommends/install matching skills from available catalogs.
 - `supervisor-agents` is a multi-agent code and architecture supervision skill for reviewing git diffs against context, implementation plans, and ADRs.
+- `scrum-master` is a baseline project-management skill for agile/sprint health and alignment workflows.
+- `senior-pm` is a baseline product/project decision skill for requirements, priorities, and acceptance criteria.
 - `esp-idf-firmware` is for ESP-IDF / ESP32-family firmware projects with `sdkconfig`, component CMake, partitions, build/flash/monitor workflows, and embedded safety constraints.
+
+After `-UpdateCatalog`, code-review-graph skills are available under `~/.agents/catalog/code-review-graph/skills` and can be copied into `~/.agents/skills` if you want them synced as normal agent skills.
 
 To install a bundled skill into your common source manually, copy it into `~/.agents/skills`:
 
@@ -206,6 +249,37 @@ Recommend and install matching skills into `~/.agents/skills`, then sync targets
 ```powershell
 powershell -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -ProjectPath D:\Workspace\Project\my-app -InstallRecommendedSkills -Targets claude,openclaw,codex -Force
 ```
+
+Install baseline + recommended project-specific assets directly into a project-local Claude setup:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -ProjectPath D:\Workspace\Project\my-app -ProjectInstall -Force
+```
+
+Project install currently writes:
+
+```text
+<ProjectPath>/.claude/skills/<baseline-or-recommended-skill>/
+<ProjectPath>/.claude/commands/<skill-name>/...   # when a skill ships commands/
+<ProjectPath>/.claude/commands/common-installer-demo.md
+<ProjectPath>/.claude/commands/scrum-align.md
+<ProjectPath>/.mcp.json                           # merged MCP servers from ~/.agents
+```
+
+Baseline skills are installed for every project by default because they are broadly useful:
+
+```text
+project-skill-recommender
+supervisor-agents
+scrum-master
+senior-pm
+```
+
+Override them with `-BaselineSkills skill-a,skill-b`, or add `-SkipCodeReviewGraphMcp` if the project should not receive the default code-review-graph MCP preset.
+
+Project install also creates a default `.claude/commands/scrum-align.md` command. This command tells the agent to build/update `code-review-graph`, read design docs/ADR/plan, run supervisor-style review, split work into Dev/Test/QA/QC/Docs/Supervisor roles, and iterate until implementation aligns with the documented design or a human decision is required.
+
+Use this when global `~/.claude` should stay minimal and only contain common reusable skills/commands, while project-specific recommendations live with the project.
 
 Use custom catalog roots:
 
@@ -274,9 +348,17 @@ pwsh -NoProfile -File ./agent-common-sync.ps1 -Targets claude,openclaw -Force
 -RecommendSkills    Print installable skill recommendations for -ProjectPath
 -InstallRecommendedSkills
                     Copy recommended skills into ~/.agents/skills before syncing targets
+-ProjectInstall    Install baseline + recommended skills/commands and MCP config into -ProjectPath
+-Demo              Deprecated compatibility switch; common project commands are always installed
+-BaselineSkills <names>
+                    Always install these common project skills during -ProjectInstall
 -SkillCatalogRoots <paths>
                     Search roots for installable skills, default: ./skills and ~/.agents/catalog
 -UpdateCatalog      Clone/update public catalogs
+-InstallCodeReviewGraphMcp
+                    Explicitly add code-review-graph MCP preset; normal sync runs do this by default
+-SkipCodeReviewGraphMcp
+                    Disable the default code-review-graph MCP preset creation/sync
 -Force              Overwrite existing target skill folders
 -DryRun             Show planned actions without writing
 -ListTargets        Print built-in target definitions
@@ -291,6 +373,7 @@ pwsh -NoProfile -File ./agent-common-sync.ps1 -Targets claude,openclaw -Force
 - OpenClaw config is schema-sensitive, so `openclaw.json` is not edited by default. OpenClaw skills are copied to `~/.openclaw/skills`; use OpenClaw's supported configuration flow to enable them. Only use `-AllowOpenClawConfigWrite` after validating your OpenClaw config schema.
 - Use `-DryRun` before syncing if unsure.
 - The script does not auto-enable arbitrary external services or install package dependencies. MCP command definitions are copied as config only.
+- Normal sync runs configure agents to run `uvx code-review-graph serve`; ensure you trust that package and have Python/uv available before using it. Use `-SkipCodeReviewGraphMcp` to disable.
 - Review public catalog content before copying skills into `~/.agents/skills`.
 
 ## Example full flow
@@ -303,7 +386,8 @@ powershell -ExecutionPolicy Bypass -File ~/agent-common-sync.ps1 -UpdateCatalog
 # Example only:
 # Copy-Item ~/.agents/catalog/some-repo/path/to/some-skill ~/.agents/skills/some-skill -Recurse
 
-# 3. Add MCP config to ~/.agents/mcp.json if needed
+# 3. Add extra MCP config to ~/.agents/mcp.json if needed
+#    code-review-graph MCP is included by default during sync runs
 
 # 4. Preview
 powershell -ExecutionPolicy Bypass -File ~/agent-common-sync.ps1 -Targets all -DryRun
