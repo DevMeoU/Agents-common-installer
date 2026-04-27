@@ -53,7 +53,8 @@ All source content is optional. The script creates `~/.agents` if missing.
   mcp/
     servers.json
     mcp.json
-    code-review-graph.json  # optional preset created by -InstallCodeReviewGraphMcp
+    code-review-graph.json       # default preset unless -SkipCodeReviewGraphMcp
+    model-task-optimizer.json    # default preset unless -SkipModelTaskOptimizerMcp
   catalog/
 ```
 
@@ -166,6 +167,58 @@ With `-UpdateCatalog`, the script clones or updates these public sources into `~
 
 Catalogs are for discovery. Review/copy selected skills into `~/.agents/skills` before syncing.
 
+To scan public GitHub repositories for agent, skill, MCP, Claude, model, prompt, or LLM-related catalogs without requiring GitHub login, run:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -ScanGithubCatalog -GithubOwner DevMeoU
+```
+
+Matched repositories are cloned or updated under `~/.agents/catalog` and then become available to `-RecommendSkills` and `-InstallRecommendedSkills`. The scan uses GitHub's public API first and falls back to `gh repo list` only if the public API is unavailable. Private repositories still require `gh auth login`.
+
+If a useful repo has a short or ambiguous name that does not match the default metadata filter, include it explicitly:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -ScanGithubCatalog -GithubOwner DevMeoU -GithubIncludeRepoNames rtk
+```
+
+Or include a family of repo names by regex, for example repositories whose names contain `ski`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -ScanGithubCatalog -GithubOwner DevMeoU -GithubIncludeRepoPattern 'ski'
+```
+
+## model-task-optimizer MCP
+
+This repository now includes a local MCP server package in `model-task-optimizer-mcp/`.
+
+It exposes tools for:
+
+- listing a bundled model-family catalog
+- recommending a primary/fallback model for a task
+- generating a project routing policy
+- tuning model settings such as temperature, context strategy, reasoning budget, prompt caching, batching, and validation
+
+The common installer creates `~/.agents/mcp/model-task-optimizer.json` by default. When this repo is present, the preset uses the local package:
+
+```json
+{
+  "mcpServers": {
+    "model-task-optimizer": {
+      "command": "uvx",
+      "args": ["--from", "<repo>/model-task-optimizer-mcp", "model-task-optimizer-mcp"]
+    }
+  }
+}
+```
+
+Run it manually with:
+
+```powershell
+uvx --from ./model-task-optimizer-mcp model-task-optimizer-mcp
+```
+
+Use `-SkipModelTaskOptimizerMcp` if a project should not receive this MCP preset.
+
 ## code-review-graph integration
 
 [`code-review-graph`](https://github.com/DevMeoU/code-review-graph) builds a local code knowledge graph and exposes it to coding agents through MCP.
@@ -218,6 +271,7 @@ skills/esp-idf-firmware/SKILL.md
 - `scrum-master` is a baseline project-management skill for agile/sprint health and alignment workflows.
 - `senior-pm` is a baseline product/project decision skill for requirements, priorities, and acceptance criteria.
 - `esp-idf-firmware` is for ESP-IDF / ESP32-family firmware projects with `sdkconfig`, component CMake, partitions, build/flash/monitor workflows, and embedded safety constraints.
+- `model-task-optimizer` is for selecting and tuning the best model/provider/routing tier for a task, with optional MCP support for model scoring and routing policies.
 
 After `-UpdateCatalog`, code-review-graph skills are available under `~/.agents/catalog/code-review-graph/skills` and can be copied into `~/.agents/skills` if you want them synced as normal agent skills.
 
@@ -273,6 +327,7 @@ project-skill-recommender
 supervisor-agents
 scrum-master
 senior-pm
+model-task-optimizer
 ```
 
 Override them with `-BaselineSkills skill-a,skill-b`, or add `-SkipCodeReviewGraphMcp` if the project should not receive the default code-review-graph MCP preset.
@@ -294,6 +349,7 @@ Current heuristics look for signals such as:
 - n8n workflow JSON containing `n8n-nodes-base` → an n8n-related skill when available
 - `SKILL.md` / `template-skill` → `skill-creator` when available
 - `mcp.json`, `.mcp.json`, `mcpServers`, MCP docs → `mcp-builder` when available
+- AI SDK imports, provider names, evals, benchmarks, prompt configs → `model-task-optimizer` when available
 - frontend, Python, Docker/CI, document files → matching skills when available in catalogs
 
 ## Usage
@@ -339,6 +395,16 @@ You can also run the `.ps1` directly with `pwsh`:
 pwsh -NoProfile -File ./agent-common-sync.ps1 -Targets claude,openclaw -Force
 ```
 
+## One-command project bootstrap
+
+Run the whole setup for a project in one command:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./agent-common-sync.ps1 -ProjectPath D:\Workspace\Project\FlintVN\FlintOS -FullBootstrap -Force -AllowInstallUv
+```
+
+This updates catalogs, scans public DevMeoU repositories, installs project skills/commands/MCP, checks `uvx`, builds `code-review-graph` when possible, reruns recommendations, and prints a final bootstrap report. Omit `-AllowInstallUv` if the script should not install `uv` automatically.
+
 ## Useful options
 
 ```text
@@ -349,16 +415,32 @@ pwsh -NoProfile -File ./agent-common-sync.ps1 -Targets claude,openclaw -Force
 -InstallRecommendedSkills
                     Copy recommended skills into ~/.agents/skills before syncing targets
 -ProjectInstall    Install baseline + recommended skills/commands and MCP config into -ProjectPath
+-FullBootstrap    Run end-to-end bootstrap: update catalog, project install, validate, build graph, report
+-AllowInstallUv   Allow -FullBootstrap to install uv with python -m pip install uv when uvx is missing
+-SkipBuildCodeGraph
+                  Skip code-review-graph status/build during -FullBootstrap
 -Demo              Deprecated compatibility switch; common project commands are always installed
 -BaselineSkills <names>
                     Always install these common project skills during -ProjectInstall
 -SkillCatalogRoots <paths>
                     Search roots for installable skills, default: ./skills and ~/.agents/catalog
 -UpdateCatalog      Clone/update public catalogs
+-ScanGithubCatalog
+                    Scan public GitHub repos for agent/skill/MCP/model-related catalogs without login; falls back to gh if needed
+-GithubOwner <name>
+                    GitHub owner to scan, default: DevMeoU
+-GithubIncludeRepoNames <names>
+                    Extra repository names to include even when metadata does not match the default filter
+-GithubIncludeRepoPattern <regex>
+                    Extra repository-name regex to include, for example 'ski'
 -InstallCodeReviewGraphMcp
                     Explicitly add code-review-graph MCP preset; normal sync runs do this by default
+-InstallModelTaskOptimizerMcp
+                    Explicitly add model-task-optimizer MCP preset; normal sync runs do this by default
 -SkipCodeReviewGraphMcp
                     Disable the default code-review-graph MCP preset creation/sync
+-SkipModelTaskOptimizerMcp
+                    Disable the default model-task-optimizer MCP preset creation/sync
 -Force              Overwrite existing target skill folders
 -DryRun             Show planned actions without writing
 -ListTargets        Print built-in target definitions

@@ -19,6 +19,7 @@ The goal is to keep agents capable without flooding them with unnecessary skills
 | Recommend skills | Run `agent-common-sync.ps1 -ProjectPath <repo> -RecommendSkills` |
 | Install recommended skills | Run `agent-common-sync.ps1 -ProjectPath <repo> -InstallRecommendedSkills -Targets <targets>` |
 | Refresh catalogs | Run `agent-common-sync.ps1 -UpdateCatalog` |
+| Scan GitHub catalogs | Run `agent-common-sync.ps1 -ScanGithubCatalog -GithubOwner <owner>`; public repos do not require GitHub login |
 | Avoid over-installing | Only install skills backed by project evidence |
 
 ## Core Rules
@@ -83,6 +84,7 @@ Tell the user:
 | `docs/adr`, `adr`, `PLAN.md`, `plan.md` | `supervisor-agents` |
 | `SKILL.md`, `template-skill/SKILL.md` | `skill-creator` |
 | `mcp.json`, `.mcp.json`, `mcpServers`, MCP docs | `mcp-builder` |
+| AI SDK imports, provider names, evals, benchmarks, prompt configs | `model-task-optimizer` |
 | `package.json`, Vite, Next, React app files | `frontend-design` |
 | `pyproject.toml`, `requirements.txt`, `setup.py` | Python-related skill when available |
 | `Dockerfile`, `docker-compose`, `.github/workflows` | DevOps-related skill when available |

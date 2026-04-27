@@ -1,0 +1,682 @@
+﻿[
+    {
+        "Repo":  "Agents-common-installer",
+        "Score":  30,
+        "Matched":  "agent:88, skill:111, mcp:58, token-model:26, prompt-workflow:20, review-graph:38",
+        "Description":  "Common installer to sync Agent Skills and MCP server configs from ~/.agents to Claude, OpenClaw, Codex, Cursor, Gemini, OpenCode, Windsurf, and custom agents.",
+        "ReadmeSignal":  "# Agents Common Installer",
+        "Url":  "https://github.com/DevMeoU/Agents-common-installer",
+        "CloneUrl":  "https://github.com/DevMeoU/Agents-common-installer.git",
+        "Updated":  "2026-04-25T06:20:49Z"
+    },
+    {
+        "Repo":  "awesome-agent-skills",
+        "Score":  30,
+        "Matched":  "agent:166, skill:2034, mcp:30, token-model:327, prompt-workflow:113, review-graph:70",
+        "Description":  "A curated collection of 1000+ agent skills from official dev teams and the community, compatible with Claude Code, Codex, Gemini CLI, Cursor, and more.",
+        "ReadmeSignal":  "\u003ca href=\"https://github.com/VoltAgent/voltagent\"\u003e",
+        "Url":  "https://github.com/DevMeoU/awesome-agent-skills",
+        "CloneUrl":  "https://github.com/DevMeoU/awesome-agent-skills.git",
+        "Updated":  "2026-04-24T07:31:34Z"
+    },
+    {
+        "Repo":  "everything-claude-code",
+        "Score":  30,
+        "Matched":  "agent:117, skill:98, mcp:43, token-model:233, prompt-workflow:97, review-graph:14",
+        "Description":  "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
+        "ReadmeSignal":  "# Everything Claude Code",
+        "Url":  "https://github.com/DevMeoU/everything-claude-code",
+        "CloneUrl":  "https://github.com/DevMeoU/everything-claude-code.git",
+        "Updated":  "2026-04-24T07:31:48Z"
+    },
+    {
+        "Repo":  "GitNexus",
+        "Score":  30,
+        "Matched":  "agent:20, skill:20, mcp:49, token-model:39, prompt-workflow:22, review-graph:40",
+        "Description":  "GitNexus: The Zero-Server Code Intelligence Engine -       GitNexus is a client-side knowledge graph creator that runs entirely in your browser. Drop in a GitHub repo or ZIP file, and get an interactive knowledge graph wit a built in Graph RAG Agent. Perfect for code exploration",
+        "ReadmeSignal":  "⚠️ Important Notice:** GitNexus has NO official cryptocurrency, token, or coin. Any token/coin using the GitNexus name on Pump.fun or any other platform is **not affiliated with, endorsed by, or created by** this project or its maintainers. Do not purchase any cryptocurrency claiming association with GitNexus.",
+        "Url":  "https://github.com/DevMeoU/GitNexus",
+        "CloneUrl":  "https://github.com/DevMeoU/GitNexus.git",
+        "Updated":  "2026-04-25T03:04:32Z"
+    },
+    {
+        "Repo":  "auto-dev-skill",
+        "Score":  25,
+        "Matched":  "agent:12, skill:37, mcp:15, token-model:6, prompt-workflow:6",
+        "Description":  "Automotive Data for AI Agents",
+        "ReadmeSignal":  "\u003ch1 align=\"center\"\u003eAuto.dev Agent Skill\u003c/h1\u003e",
+        "Url":  "https://github.com/DevMeoU/auto-dev-skill",
+        "CloneUrl":  "https://github.com/DevMeoU/auto-dev-skill.git",
+        "Updated":  "2026-04-24T07:31:46Z"
+    },
+    {
+        "Repo":  "claude-skills",
+        "Score":  25,
+        "Matched":  "agent:51, skill:127, mcp:5, token-model:70, prompt-workflow:25",
+        "Description":  "232+ Claude Code skills \u0026 agent plugins for Claude Code, Codex, Gemini CLI, Cursor, and 8 more coding agents — engineering, marketing, product, compliance, C-level advisory.",
+        "ReadmeSignal":  "# Claude Code Skills \u0026 Plugins — Agent Skills for Every Coding Tool",
+        "Url":  "https://github.com/DevMeoU/claude-skills",
+        "CloneUrl":  "https://github.com/DevMeoU/claude-skills.git",
+        "Updated":  "2026-04-24T18:30:08Z"
+    },
+    {
+        "Repo":  "template-for-skills-agent",
+        "Score":  23,
+        "Matched":  "agent:9, skill:36, token-model:3, prompt-workflow:13, review-graph:7",
+        "Description":  "template-for-skills-agent is a template for create new skill",
+        "ReadmeSignal":  "# Template for Skills Agent",
+        "Url":  "https://github.com/DevMeoU/template-for-skills-agent",
+        "CloneUrl":  "https://github.com/DevMeoU/template-for-skills-agent.git",
+        "Updated":  "2026-04-24T14:53:52Z"
+    },
+    {
+        "Repo":  "genai-toolbox",
+        "Score":  22,
+        "Matched":  "agent:6, mcp:33, token-model:15, prompt-workflow:4, review-graph:3",
+        "Description":  "MCP Toolbox for Databases is an open source MCP server for databases.",
+        "ReadmeSignal":  "# MCP Toolbox for Databases",
+        "Url":  "https://github.com/DevMeoU/genai-toolbox",
+        "CloneUrl":  "https://github.com/DevMeoU/genai-toolbox.git",
+        "Updated":  "2026-04-24T07:32:22Z"
+    },
+    {
+        "Repo":  "supervisor-agents-skill",
+        "Score":  22,
+        "Matched":  "agent:32, skill:37, token-model:8, prompt-workflow:2, review-graph:17",
+        "Description":  "supervisor-agents-skill are a code and architecture system monitoring agent.",
+        "ReadmeSignal":  "# Supervisor Agents Skill",
+        "Url":  "https://github.com/DevMeoU/supervisor-agents-skill",
+        "CloneUrl":  "https://github.com/DevMeoU/supervisor-agents-skill.git",
+        "Updated":  "2026-04-24T15:04:18Z"
+    },
+    {
+        "Repo":  "ai-engineering-interview-questions",
+        "Score":  21,
+        "Matched":  "agent:74, mcp:22, token-model:153, prompt-workflow:50, review-graph:1",
+        "Description":  "Your Cheat Sheet for AI Engineering Interview – Questions and Answers.",
+        "ReadmeSignal":  "\u003e - LLM Engineer",
+        "Url":  "https://github.com/DevMeoU/ai-engineering-interview-questions",
+        "CloneUrl":  "https://github.com/DevMeoU/ai-engineering-interview-questions.git",
+        "Updated":  "2026-04-26T15:58:28Z"
+    },
+    {
+        "Repo":  "automotive-claude-code-agents",
+        "Score":  20,
+        "Matched":  "agent:21, skill:12, token-model:27, prompt-workflow:23",
+        "Description":  "Automotive software engineering is one of the most complex and regulated domains in the world. Engineers juggle **ISO 26262 functional safety**, **AUTOSAR architectures**, **MISRA compliance**, **cybersecurity standards**, and **real-time embedded constraints** -- all while shipping on aggressive timelines.",
+        "ReadmeSignal":  "\u003cimg src=\"docs/assets/banner.png\" alt=\"Automotive Claude Code Agents\" width=\"800\" /\u003e",
+        "Url":  "https://github.com/DevMeoU/automotive-claude-code-agents",
+        "CloneUrl":  "https://github.com/DevMeoU/automotive-claude-code-agents.git",
+        "Updated":  "2026-04-24T19:12:59Z"
+    },
+    {
+        "Repo":  "code-review-graph",
+        "Score":  20,
+        "Matched":  "mcp:16, token-model:63, prompt-workflow:17, review-graph:130",
+        "Description":  "Local knowledge graph for Claude Code. Builds a persistent map of your codebase so Claude reads only what matters — 6.8× fewer tokens on reviews and up to 49× on daily coding tasks.",
+        "ReadmeSignal":  "\u003ch1 align=\"center\"\u003ecode-review-graph\u003c/h1\u003e",
+        "Url":  "https://github.com/DevMeoU/code-review-graph",
+        "CloneUrl":  "https://github.com/DevMeoU/code-review-graph.git",
+        "Updated":  "2026-04-25T02:54:28Z"
+    },
+    {
+        "Repo":  "rust-finance",
+        "Score":  20,
+        "Matched":  "agent:10, token-model:19, prompt-workflow:6, review-graph:17",
+        "Description":  "A high-performance, ultra low-latency trading terminal and AI-infused daemon built completely in Rust.",
+        "ReadmeSignal":  "\u003cimg src=\"https://img.shields.io/badge/Finnhub-000000?style=for-the-badge\u0026logo=graphql\u0026logoColor=white\" alt=\"Finnhub\" /\u003e",
+        "Url":  "https://github.com/DevMeoU/rust-finance",
+        "CloneUrl":  "https://github.com/DevMeoU/rust-finance.git",
+        "Updated":  "2026-04-24T15:06:57Z"
+    },
+    {
+        "Repo":  "superpowers",
+        "Score":  20,
+        "Matched":  "agent:18, skill:16, token-model:14, prompt-workflow:6",
+        "Description":  "An agentic skills framework \u0026 software development methodology that works.",
+        "ReadmeSignal":  "Superpowers is a complete software development methodology for your coding agents, built on top of a set of composable skills and some initial instructions that make sure your agent uses them.",
+        "Url":  "https://github.com/DevMeoU/superpowers",
+        "CloneUrl":  "https://github.com/DevMeoU/superpowers.git",
+        "Updated":  "2026-04-27T12:14:53Z"
+    },
+    {
+        "Repo":  "worldquant-miner",
+        "Score":  20,
+        "Matched":  "agent:41, token-model:39, prompt-workflow:10, review-graph:5",
+        "Description":  "Leverage WorldQuant API to generate alpha signals, and mine promising alpha expressions.",
+        "ReadmeSignal":  "- 🚀 **3-5x faster** alpha generation with local Ollama LLM",
+        "Url":  "https://github.com/DevMeoU/worldquant-miner",
+        "CloneUrl":  "https://github.com/DevMeoU/worldquant-miner.git",
+        "Updated":  "2026-04-24T07:32:23Z"
+    },
+    {
+        "Repo":  "ScreenAgent",
+        "Score":  18,
+        "Matched":  "agent:119, skill:1, token-model:35, prompt-workflow:42, review-graph:2",
+        "Description":  "ScreenAgent: A Computer Control Agent Driven by Visual Language Large Model (IJCAI-24)",
+        "ReadmeSignal":  "\u003ch1 align=\"center\"\u003e ScreenAgent \u003cimg src=\"assets/ScreenAgent.png\" alt=\"ScreenAgent Logo\" width=\"30\"\u003e : A Computer Control Agent Driven by Visual Language Large Model\u003c/h1\u003e",
+        "Url":  "https://github.com/DevMeoU/ScreenAgent",
+        "CloneUrl":  "https://github.com/DevMeoU/ScreenAgent.git",
+        "Updated":  "2026-04-24T07:32:54Z"
+    },
+    {
+        "Repo":  "rtk",
+        "Score":  17,
+        "Matched":  "agent:18, token-model:43, prompt-workflow:39, review-graph:2",
+        "Description":  "CLI proxy that reduces LLM token consumption by 60-90% on common dev commands. Single Rust binary, zero dependencies",
+        "ReadmeSignal":  "\u003cimg src=\"https://avatars.githubusercontent.com/u/258253854?v=4\" alt=\"RTK - Rust Token Killer\" width=\"500\"\u003e",
+        "Url":  "https://github.com/DevMeoU/rtk",
+        "CloneUrl":  "https://github.com/DevMeoU/rtk.git",
+        "Updated":  "2026-04-25T10:05:02Z"
+    },
+    {
+        "Repo":  "t",
+        "Score":  16,
+        "Matched":  "mcp:7, token-model:106, prompt-workflow:26, review-graph:1",
+        "Description":  null,
+        "ReadmeSignal":  "\u003ca href=\"https://trendshift.io/repositories/5973\" target=\"_blank\"\u003e\u003cimg src=\"https://trendshift.io/api/badge/repositories/5973\" alt=\"ChatGPTNextWeb%2FChatGPT-Next-Web | Trendshift\" style=\"width: 250px; height: 55px;\" width=\"250\" height=\"55\"/\u003e\u003c/a\u003e",
+        "Url":  "https://github.com/DevMeoU/t",
+        "CloneUrl":  "https://github.com/DevMeoU/t.git",
+        "Updated":  "2026-04-24T07:32:10Z"
+    },
+    {
+        "Repo":  "ai-manus",
+        "Score":  15,
+        "Matched":  "agent:7, mcp:4, token-model:18, prompt-workflow:1",
+        "Description":  "AI Manus is a general-purpose AI Agent system that supports running various tools and operations in a sandbox environment.",
+        "ReadmeSignal":  "AI Manus is a general-purpose AI Agent system that supports running various tools and operations in a sandbox environment. Now with **Claw** — a deeply integrated [OpenClaw](https://github.com/anthropics/openclaw) AI assistant that brings one-click deployment, per-user isolated containers, and seamless chat history to the Manus ecosystem.",
+        "Url":  "https://github.com/DevMeoU/ai-manus",
+        "CloneUrl":  "https://github.com/DevMeoU/ai-manus.git",
+        "Updated":  "2026-04-27T16:40:22Z"
+    },
+    {
+        "Repo":  "Awesome-Embedded",
+        "Score":  15,
+        "Matched":  "agent:3, skill:4, prompt-workflow:20, review-graph:3",
+        "Description":  "A curated list of awesome embedded programming.",
+        "ReadmeSignal":  "- [Embedded Software Skill](#embedded-software-skill)",
+        "Url":  "https://github.com/DevMeoU/Awesome-Embedded",
+        "CloneUrl":  "https://github.com/DevMeoU/Awesome-Embedded.git",
+        "Updated":  "2026-04-24T07:31:54Z"
+    },
+    {
+        "Repo":  "ollama",
+        "Score":  15,
+        "Matched":  "agent:27, token-model:227, prompt-workflow:8",
+        "Description":  "Get up and running with Kimi-K2.5, GLM-5, MiniMax, DeepSeek, gpt-oss, Qwen, Gemma and other models.",
+        "ReadmeSignal":  "Start building with open models.",
+        "Url":  "https://github.com/DevMeoU/ollama",
+        "CloneUrl":  "https://github.com/DevMeoU/ollama.git",
+        "Updated":  "2026-04-24T07:31:35Z"
+    },
+    {
+        "Repo":  "openmanus",
+        "Score":  13,
+        "Matched":  "agent:21, mcp:2, token-model:19, prompt-workflow:1",
+        "Description":  "No fortress, purely open ground.  OpenManus is Coming.",
+        "ReadmeSignal":  "[![GitHub stars](https://img.shields.io/github/stars/FoundationAgents/OpenManus?style=social)](https://github.com/FoundationAgents/OpenManus/stargazers)",
+        "Url":  "https://github.com/DevMeoU/openmanus",
+        "CloneUrl":  "https://github.com/DevMeoU/openmanus.git",
+        "Updated":  "2025-09-12T18:38:25Z"
+    },
+    {
+        "Repo":  "skills",
+        "Score":  13,
+        "Matched":  "agent:3, skill:41, token-model:4, prompt-workflow:1",
+        "Description":  "My personal directory of skills, straight from my .claude directory.",
+        "ReadmeSignal":  "# Agent Skills",
+        "Url":  "https://github.com/DevMeoU/skills",
+        "CloneUrl":  "https://github.com/DevMeoU/skills.git",
+        "Updated":  "2026-04-25T11:10:06Z"
+    },
+    {
+        "Repo":  "xiaozhi-esp32-server",
+        "Score":  13,
+        "Matched":  "mcp:9, token-model:38, review-graph:3",
+        "Description":  "本项目为xiaozhi-esp32提供后端服务，帮助您快速搭建ESP32设备控制服务器。Backend service for xiaozhi-esp32, helps you quickly build an ESP32 device control server.",
+        "ReadmeSignal":  "支持MQTT+UDP协议、Websocket协议、MCP接入点、声纹识别",
+        "Url":  "https://github.com/DevMeoU/xiaozhi-esp32-server",
+        "CloneUrl":  "https://github.com/DevMeoU/xiaozhi-esp32-server.git",
+        "Updated":  "2026-04-24T07:32:13Z"
+    },
+    {
+        "Repo":  "xiaozhi-mcp-ha",
+        "Score":  13,
+        "Matched":  "mcp:72, token-model:10, prompt-workflow:3",
+        "Description":  "A Home Assistant Custom Integration (HACS) that connects Xiaozhi ESP32 AI chatbot to Home Assistant via MCP",
+        "ReadmeSignal":  "# Xiaozhi MCP Integration for Home Assistant",
+        "Url":  "https://github.com/DevMeoU/xiaozhi-mcp-ha",
+        "CloneUrl":  "https://github.com/DevMeoU/xiaozhi-mcp-ha.git",
+        "Updated":  "2026-04-24T07:32:26Z"
+    },
+    {
+        "Repo":  "9router",
+        "Score":  12,
+        "Matched":  "agent:1, token-model:234, prompt-workflow:6, review-graph:1",
+        "Description":  "Connect All AI Code Tools (Claude Code, Cursor, Antigravity, Copilot, Codex, Gemini, OpenCode, Cline, OpenClaw...) to 40+ AI Providers \u0026 100+ Models",
+        "ReadmeSignal":  "**Never stop coding. Auto-route to FREE \u0026 cheap AI models with smart fallback.**",
+        "Url":  "https://github.com/DevMeoU/9router",
+        "CloneUrl":  "https://github.com/DevMeoU/9router.git",
+        "Updated":  "2026-04-24T07:31:36Z"
+    },
+    {
+        "Repo":  "andrej-karpathy-skills",
+        "Score":  11,
+        "Matched":  "agent:1, skill:8, token-model:21",
+        "Description":  "A single CLAUDE.md file to improve Claude Code behavior, derived from Andrej Karpathy\u0027s observations on LLM coding pitfalls.",
+        "ReadmeSignal":  "# Karpathy-Inspired Claude Code Guidelines",
+        "Url":  "https://github.com/DevMeoU/andrej-karpathy-skills",
+        "CloneUrl":  "https://github.com/DevMeoU/andrej-karpathy-skills.git",
+        "Updated":  "2026-04-24T07:31:41Z"
+    },
+    {
+        "Repo":  "awesome-automotive",
+        "Score":  11,
+        "Matched":  "agent:9, prompt-workflow:5, review-graph:1",
+        "Description":  "A curated list of delightful and free automotive engineering resources, looking for contributors ❗",
+        "ReadmeSignal":  "✅ perform review and leave a comment \u003cstrong\u003e\u003ca href=\"https://github.com/Marcin214/awesome-automotive/issues/2\"\u003ehere\u003c/a\u003e\u003c/strong\u003e\u003cbr\u003e",
+        "Url":  "https://github.com/DevMeoU/awesome-automotive",
+        "CloneUrl":  "https://github.com/DevMeoU/awesome-automotive.git",
+        "Updated":  "2026-04-24T07:32:53Z"
+    },
+    {
+        "Repo":  "hackingtool",
+        "Score":  11,
+        "Matched":  "token-model:2, prompt-workflow:13, review-graph:4",
+        "Description":  "ALL IN ONE Hacking Tool For Hackers",
+        "ReadmeSignal":  "| 6 | 🎣 [Phishing Attack](#phishing-attack-tools) | 17 | | 16 | 🖼 [Steganography](#steganography-tools) | 4 |",
+        "Url":  "https://github.com/DevMeoU/hackingtool",
+        "CloneUrl":  "https://github.com/DevMeoU/hackingtool.git",
+        "Updated":  "2026-04-24T07:31:54Z"
+    },
+    {
+        "Repo":  "supervision",
+        "Score":  11,
+        "Matched":  "token-model:1, prompt-workflow:6, review-graph:47",
+        "Description":  "We write your reusable computer vision tools. 💜",
+        "ReadmeSignal":  "[![codecov](https://codecov.io/gh/roboflow/supervision/graph/badge.svg?token=HMNJ5FVZ36)](https://codecov.io/gh/roboflow/supervision)",
+        "Url":  "https://github.com/DevMeoU/supervision",
+        "CloneUrl":  "https://github.com/DevMeoU/supervision.git",
+        "Updated":  "2026-04-17T17:56:26Z"
+    },
+    {
+        "Repo":  "freellmapi",
+        "Score":  10,
+        "Matched":  "token-model:70, prompt-workflow:5",
+        "Description":  "OpenAI-compatible proxy that aggregates free-tier keys from ~14 AI providers with automatic failover. For personal experimentation only.",
+        "ReadmeSignal":  "# FreeLLMAPI",
+        "Url":  "https://github.com/DevMeoU/freellmapi",
+        "CloneUrl":  "https://github.com/DevMeoU/freellmapi.git",
+        "Updated":  "2026-04-25T14:27:31Z"
+    },
+    {
+        "Repo":  "ScreenExplorer",
+        "Score":  10,
+        "Matched":  "agent:9, token-model:11",
+        "Description":  "ScreenExplorer: Training a Vision-Language Model for Diverse Exploration in Open GUI World",
+        "ReadmeSignal":  "\u003ch1 align=\"center\"\u003e ScreenExplorer: Training a Vision-Language Model for Diverse Exploration in Open GUI World \u003c/h1\u003e",
+        "Url":  "https://github.com/DevMeoU/ScreenExplorer",
+        "CloneUrl":  "https://github.com/DevMeoU/ScreenExplorer.git",
+        "Updated":  "2026-04-24T07:32:37Z"
+    },
+    {
+        "Repo":  "Vinix-OS",
+        "Score":  8,
+        "Matched":  "token-model:4, prompt-workflow:3, review-graph:1",
+        "Description":  "A reference operating system for embedded platforms, with initial bring-up on Beaglebone Black (ARM Cortex-A8).",
+        "ReadmeSignal":  "### HDMI Graphics Stack",
+        "Url":  "https://github.com/DevMeoU/Vinix-OS",
+        "CloneUrl":  "https://github.com/DevMeoU/Vinix-OS.git",
+        "Updated":  "2026-04-24T07:31:51Z"
+    },
+    {
+        "Repo":  "xiaozhi-client",
+        "Score":  8,
+        "Matched":  "mcp:16, prompt-workflow:2, review-graph:1",
+        "Description":  "小智AI客户端，目前主要用于MCP的对接",
+        "ReadmeSignal":  "[![codecov](https://codecov.io/gh/shenjingnan/xiaozhi-client/branch/main/graph/badge.svg)](https://codecov.io/gh/shenjingnan/xiaozhi-client)",
+        "Url":  "https://github.com/DevMeoU/xiaozhi-client",
+        "CloneUrl":  "https://github.com/DevMeoU/xiaozhi-client.git",
+        "Updated":  "2026-04-24T07:32:20Z"
+    },
+    {
+        "Repo":  "auto_reg",
+        "Score":  7,
+        "Matched":  "token-model:24, prompt-workflow:2",
+        "Description":  "codex全自动注册机",
+        "ReadmeSignal":  "- 🎯 **Multi-Platform Support**: ChatGPT, Trae.ai, Cursor, Kiro, Grok, Tavily, OpenBlockLabs, and more",
+        "Url":  "https://github.com/DevMeoU/auto_reg",
+        "CloneUrl":  "https://github.com/DevMeoU/auto_reg.git",
+        "Updated":  "2026-04-24T07:31:47Z"
+    },
+    {
+        "Repo":  "freqtrade",
+        "Score":  7,
+        "Matched":  "token-model:1, prompt-workflow:7, review-graph:1",
+        "Description":  "Free, open source crypto trading bot",
+        "ReadmeSignal":  "[![Freqtrade CI](https://github.com/freqtrade/freqtrade/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/freqtrade/freqtrade/actions/workflows/ci.yml)",
+        "Url":  "https://github.com/DevMeoU/freqtrade",
+        "CloneUrl":  "https://github.com/DevMeoU/freqtrade.git",
+        "Updated":  "2026-04-25T16:38:19Z"
+    },
+    {
+        "Repo":  "gstreamer",
+        "Score":  7,
+        "Matched":  "agent:1, prompt-workflow:11, review-graph:1",
+        "Description":  "GStreamer open-source multimedia framework",
+        "ReadmeSignal":  "subprojects, such as ffmpeg, x264, json-glib, graphene, openh264, orc, etc.",
+        "Url":  "https://github.com/DevMeoU/gstreamer",
+        "CloneUrl":  "https://github.com/DevMeoU/gstreamer.git",
+        "Updated":  "2026-04-24T17:23:43Z"
+    },
+    {
+        "Repo":  "MCU-s-AI-Assistant",
+        "Score":  7,
+        "Matched":  "mcp:14, token-model:1, review-graph:1",
+        "Description":  "An MCP-based chatbot | 一个基于MCP的聊天机器人",
+        "ReadmeSignal":  "# An MCP-based Chatbot",
+        "Url":  "https://github.com/DevMeoU/MCU-s-AI-Assistant",
+        "CloneUrl":  "https://github.com/DevMeoU/MCU-s-AI-Assistant.git",
+        "Updated":  "2026-04-24T07:31:37Z"
+    },
+    {
+        "Repo":  "tests-embedded-systems",
+        "Score":  7,
+        "Matched":  "prompt-workflow:26, review-graph:2",
+        "Description":  "Automation tests experiment using a hybrid strategy of Continuos Integration (CI) and Hardware-In-the-Loop (HIL) concepts.",
+        "ReadmeSignal":  "\u003ca href=\"#workflows\"\u003eWorkflows\u003c/a\u003e •",
+        "Url":  "https://github.com/DevMeoU/tests-embedded-systems",
+        "CloneUrl":  "https://github.com/DevMeoU/tests-embedded-systems.git",
+        "Updated":  "2026-04-24T18:45:10Z"
+    },
+    {
+        "Repo":  "WQBrain",
+        "Score":  7,
+        "Matched":  "agent:9, prompt-workflow:1, review-graph:1",
+        "Description":  "Agentic AI-driven Quantitative Alpha Builder. Streamline alpha generation with autonomous research navigation and backtesting.",
+        "ReadmeSignal":  "# 🧠 Brainiac: Agentic AI-driven Quantitative Alpha Builder",
+        "Url":  "https://github.com/DevMeoU/WQBrain",
+        "CloneUrl":  "https://github.com/DevMeoU/WQBrain.git",
+        "Updated":  "2026-04-24T07:32:25Z"
+    },
+    {
+        "Repo":  "xiaozhi-esp32-music",
+        "Score":  7,
+        "Matched":  "mcp:13, token-model:1, review-graph:1",
+        "Description":  "小智ai机器人 音乐播放固件",
+        "ReadmeSignal":  "- main\\mcp_server.cc",
+        "Url":  "https://github.com/DevMeoU/xiaozhi-esp32-music",
+        "CloneUrl":  "https://github.com/DevMeoU/xiaozhi-esp32-music.git",
+        "Updated":  "2026-04-24T07:32:24Z"
+    },
+    {
+        "Repo":  "C",
+        "Score":  6,
+        "Matched":  "prompt-workflow:9, review-graph:1",
+        "Description":  "Collection of various algorithms in mathematics, machine learning, computer science, physics, etc implemented in C for educational purposes.",
+        "ReadmeSignal":  "[![CodeQL CI](https://github.com/TheAlgorithms/C/actions/workflows/codeql.yml/badge.svg)](https://github.com/TheAlgorithms/C/actions/workflows/codeql_analysis.yml)",
+        "Url":  "https://github.com/DevMeoU/C",
+        "CloneUrl":  "https://github.com/DevMeoU/C.git",
+        "Updated":  "2026-04-24T07:32:56Z"
+    },
+    {
+        "Repo":  "C-Plus-Plus",
+        "Score":  6,
+        "Matched":  "prompt-workflow:10, review-graph:1",
+        "Description":  "Collection of various algorithms in mathematics, machine learning, computer science and physics implemented in C++ for educational purposes.",
+        "ReadmeSignal":  "[![CodeQL CI](https://github.com/TheAlgorithms/C-Plus-Plus/actions/workflows/codeql.yml/badge.svg)](https://github.com/TheAlgorithms/C-Plus-Plus/actions/workflows/codeql.yml)",
+        "Url":  "https://github.com/DevMeoU/C-Plus-Plus",
+        "CloneUrl":  "https://github.com/DevMeoU/C-Plus-Plus.git",
+        "Updated":  "2026-04-24T07:32:28Z"
+    },
+    {
+        "Repo":  "n8n",
+        "Score":  6,
+        "Matched":  "agent:1, prompt-workflow:14",
+        "Description":  "Fair-code workflow automation platform with native AI capabilities. Combine visual building with custom code, self-host or cloud, 400+ integrations.",
+        "ReadmeSignal":  "# n8n - Secure Workflow Automation for Technical Teams",
+        "Url":  "https://github.com/DevMeoU/n8n",
+        "CloneUrl":  "https://github.com/DevMeoU/n8n.git",
+        "Updated":  "2026-04-24T15:14:46Z"
+    },
+    {
+        "Repo":  "open-xiaoai",
+        "Score":  6,
+        "Matched":  "agent:1, token-model:12",
+        "Description":  "让小爱音箱「听见你的声音」，解锁无限可能。 ",
+        "ReadmeSignal":  "在上一个 [MiGPT](https://github.com/idootop/mi-gpt) 项目中，我们已经实现将 ChatGPT 接入到小爱音箱。",
+        "Url":  "https://github.com/DevMeoU/open-xiaoai",
+        "CloneUrl":  "https://github.com/DevMeoU/open-xiaoai.git",
+        "Updated":  "2026-04-24T07:32:18Z"
+    },
+    {
+        "Repo":  "xiaozhi-music-mcp",
+        "Score":  6,
+        "Matched":  "mcp:15, prompt-workflow:1",
+        "Description":  "小智AI免费音乐MCP服务器",
+        "ReadmeSignal":  "# 免费音乐MCP服务器",
+        "Url":  "https://github.com/DevMeoU/xiaozhi-music-mcp",
+        "CloneUrl":  "https://github.com/DevMeoU/xiaozhi-music-mcp.git",
+        "Updated":  "2026-04-24T07:32:31Z"
+    },
+    {
+        "Repo":  "Embedded-systems-engineer-skills",
+        "Score":  5,
+        "Matched":  "skill:17",
+        "Description":  "Collection of skills required for embedded systems engineer work position in various companies",
+        "ReadmeSignal":  "This repository contains a collection of [skills](https://github.com/eng-mg/Embedded-systems-engineer-skills/blob/master/Skills.md) required for embedded systems engineer/developer work position in various companies",
+        "Url":  "https://github.com/DevMeoU/Embedded-systems-engineer-skills",
+        "CloneUrl":  "https://github.com/DevMeoU/Embedded-systems-engineer-skills.git",
+        "Updated":  "2026-04-24T18:44:36Z"
+    },
+    {
+        "Repo":  "n8nctl",
+        "Score":  5,
+        "Matched":  "prompt-workflow:6",
+        "Description":  "⚡ A lightweight CLI for managing n8n workflows declaratively with YAML.",
+        "ReadmeSignal":  "\u003e ⚡ A lightweight CLI for managing [n8n](https://n8n.io) workflows declaratively with YAML.",
+        "Url":  "https://github.com/DevMeoU/n8nctl",
+        "CloneUrl":  "https://github.com/DevMeoU/n8nctl.git",
+        "Updated":  "2026-04-24T15:10:44Z"
+    },
+    {
+        "Repo":  "py-xiaozhi",
+        "Score":  5,
+        "Matched":  "mcp:9",
+        "Description":  "python版本的小智ai，主要帮助那些没有硬件却想体验小智功能的人,如果可以请点个小星星！",
+        "ReadmeSignal":  "### 🔧 MCP工具生态系统",
+        "Url":  "https://github.com/DevMeoU/py-xiaozhi",
+        "CloneUrl":  "https://github.com/DevMeoU/py-xiaozhi.git",
+        "Updated":  "2026-04-24T07:32:14Z"
+    },
+    {
+        "Repo":  "TikTokDownloader",
+        "Score":  5,
+        "Matched":  "token-model:1, prompt-workflow:4",
+        "Description":  "TikTok 发布/喜欢/合辑/直播/视频/图集/音乐；抖音发布/喜欢/收藏/收藏夹/视频/图集/实况/直播/音乐/合集/评论/账号/搜索/热榜数据采集工具/下载工具",
+        "ReadmeSignal":  "headers = {\"token\": \"\"}",
+        "Url":  "https://github.com/DevMeoU/TikTokDownloader",
+        "CloneUrl":  "https://github.com/DevMeoU/TikTokDownloader.git",
+        "Updated":  "2026-04-24T07:31:55Z"
+    },
+    {
+        "Repo":  "xiaozhi-mqtt-gateway",
+        "Score":  5,
+        "Matched":  "mcp:2, token-model:2, prompt-workflow:1",
+        "Description":  "小智AI的MQTT+UDP服务器，支持后端Websocket程序动态负载均衡",
+        "ReadmeSignal":  "### 接口1 设备指令下发API，支持MCP指令并返回设备响应",
+        "Url":  "https://github.com/DevMeoU/xiaozhi-mqtt-gateway",
+        "CloneUrl":  "https://github.com/DevMeoU/xiaozhi-mqtt-gateway.git",
+        "Updated":  "2026-04-24T07:32:20Z"
+    },
+    {
+        "Repo":  "autoware_vision_pilot",
+        "Score":  3,
+        "Matched":  "agent:3",
+        "Description":  "Free self-driving car stack - fully open-source ADAS and autonomous driving system",
+        "ReadmeSignal":  "This codebase contains **productionizable and safety certifiable code for an open-source ADAS and Full Self Driving** system that can power safe autonomous driving around the world. It is designed to be integrated with automotive OEMs and Tier-1 suppliers in series production passenger cars. We offer the complete codebase as free and fully open-source, including the release of all of our model architectures, data parsing scripts, training pipelines and model weights to help democratize access to this vital technology. All of our technology is available under the persmissive Apache 2.0 licence and can freely be used for both commercial and research purposes.",
+        "Url":  "https://github.com/DevMeoU/autoware_vision_pilot",
+        "CloneUrl":  "https://github.com/DevMeoU/autoware_vision_pilot.git",
+        "Updated":  "2026-04-24T07:31:38Z"
+    },
+    {
+        "Repo":  "shadPS4",
+        "Score":  3,
+        "Matched":  "prompt-workflow:2, review-graph:1",
+        "Description":  "PlayStation 4 emulator for Windows, Linux and macOS written in C++",
+        "ReadmeSignal":  "\u003ca href=\"https://github.com/shadps4-emu/shadPS4/graphs/contributors\"\u003e",
+        "Url":  "https://github.com/DevMeoU/shadPS4",
+        "CloneUrl":  "https://github.com/DevMeoU/shadPS4.git",
+        "Updated":  "2026-04-24T07:32:12Z"
+    },
+    {
+        "Repo":  "3d-speaker",
+        "Score":  2,
+        "Matched":  "token-model:2",
+        "Description":  "A Repository for Single- and Multi-modal Speaker Verification, Speaker Recognition and Speaker Diarization",
+        "ReadmeSignal":  "![license](https://img.shields.io/github/license/modelscope/modelscope.svg)",
+        "Url":  "https://github.com/DevMeoU/3d-speaker",
+        "CloneUrl":  "https://github.com/DevMeoU/3d-speaker.git",
+        "Updated":  "2026-04-24T07:32:30Z"
+    },
+    {
+        "Repo":  "cppinsights_",
+        "Score":  2,
+        "Matched":  "skill:1, prompt-workflow:1",
+        "Description":  "Welcome to CppInsights! 🚀 Your easy guide to understanding C++.",
+        "ReadmeSignal":  "Organized into branches, each branch of this repository is dedicated to a specific aspect of C++, facilitating easy navigation and focused learning. Whether you\u0027re a new or an experienced developer, our examples are tailored to help you grasp complex concepts and refine your C++ skills.",
+        "Url":  "https://github.com/DevMeoU/cppinsights_",
+        "CloneUrl":  "https://github.com/DevMeoU/cppinsights_.git",
+        "Updated":  "2026-04-24T07:32:07Z"
+    },
+    {
+        "Repo":  "DevMeoU",
+        "Score":  2,
+        "Matched":  "skill:1, prompt-workflow:1",
+        "Description":  "About me",
+        "ReadmeSignal":  "## 🛠 Skills \u0026 Tools",
+        "Url":  "https://github.com/DevMeoU/DevMeoU",
+        "CloneUrl":  "https://github.com/DevMeoU/DevMeoU.git",
+        "Updated":  "2026-04-24T07:32:48Z"
+    },
+    {
+        "Repo":  "FlintESPJVM",
+        "Score":  2,
+        "Matched":  "prompt-workflow:2",
+        "Description":  "FlintESPJVM brings the power of Java to ESP32.  Allows you to run and debug Java programs directly on the ESP32 hardware",
+        "ReadmeSignal":  "",
+        "Url":  "https://github.com/DevMeoU/FlintESPJVM",
+        "CloneUrl":  "https://github.com/DevMeoU/FlintESPJVM.git",
+        "Updated":  "2026-04-24T07:31:42Z"
+    },
+    {
+        "Repo":  "MCP_Client",
+        "Score":  2,
+        "Matched":  "mcp:2",
+        "Description":  "Support MCP for Xiaozhi",
+        "ReadmeSignal":  "",
+        "Url":  "https://github.com/DevMeoU/MCP_Client",
+        "CloneUrl":  "https://github.com/DevMeoU/MCP_Client.git",
+        "Updated":  "2026-04-24T07:32:09Z"
+    },
+    {
+        "Repo":  "MiniVM",
+        "Score":  2,
+        "Matched":  "prompt-workflow:2",
+        "Description":  "MiniVM is a small java virtual machine that can run on 32 bit MCUs with limmited resource",
+        "ReadmeSignal":  "",
+        "Url":  "https://github.com/DevMeoU/MiniVM",
+        "CloneUrl":  "https://github.com/DevMeoU/MiniVM.git",
+        "Updated":  "2026-04-24T07:33:07Z"
+    },
+    {
+        "Repo":  "openautosar",
+        "Score":  2,
+        "Matched":  "prompt-workflow:2",
+        "Description":  "This repository contains the contribution of an \"AUTOSAR Classic Playground\" from Da Vinci Engineering GmbH to the open-source community. It has to be considered a continuous work in progress.",
+        "ReadmeSignal":  "[![CMake](https://github.com/Da-Vinci-Engineering/openAUTOSAR/actions/workflows/cmake.yml/badge.svg?branch=master)](https://github.com/Da-Vinci-Engineering/openAUTOSAR/actions/workflows/cmake.yml)",
+        "Url":  "https://github.com/DevMeoU/openautosar",
+        "CloneUrl":  "https://github.com/DevMeoU/openautosar.git",
+        "Updated":  "2026-04-24T07:33:07Z"
+    },
+    {
+        "Repo":  "Python",
+        "Score":  2,
+        "Matched":  "prompt-workflow:2",
+        "Description":  "All Algorithms implemented in Python",
+        "ReadmeSignal":  "\u003cimg src=\"https://img.shields.io/github/actions/workflow/status/TheAlgorithms/Python/build.yml?branch=master\u0026label=CI\u0026logo=github\u0026style=flat-square\" height=\"20\" alt=\"GitHub Workflow Status\"\u003e",
+        "Url":  "https://github.com/DevMeoU/Python",
+        "CloneUrl":  "https://github.com/DevMeoU/Python.git",
+        "Updated":  "2026-04-24T07:32:29Z"
+    },
+    {
+        "Repo":  "UTT_WPF_APP",
+        "Score":  2,
+        "Matched":  "agent:1, token-model:1",
+        "Description":  null,
+        "ReadmeSignal":  "This is a WPF (.NET 8) sample sales manager application with MVVM, EF Core (SQLite), DPAPI-encrypted settings, and an integrated LLM chat agent.",
+        "Url":  "https://github.com/DevMeoU/UTT_WPF_APP",
+        "CloneUrl":  "https://github.com/DevMeoU/UTT_WPF_APP.git",
+        "Updated":  "2026-04-24T07:32:26Z"
+    },
+    {
+        "Repo":  "CAN-Simulator",
+        "Score":  1,
+        "Matched":  "review-graph:1",
+        "Description":  "personal project help to learning CAN basic",
+        "ReadmeSignal":  "This project provides tools for simulating and communicating on a CAN (Controller Area Network) bus using Python. It includes scripts for sending and receiving messages, as well as a comprehensive Graphical User Interface (GUI) that simulates various automotive ECUs.",
+        "Url":  "https://github.com/DevMeoU/CAN-Simulator",
+        "CloneUrl":  "https://github.com/DevMeoU/CAN-Simulator.git",
+        "Updated":  "2026-04-24T07:31:59Z"
+    },
+    {
+        "Repo":  "esphome",
+        "Score":  1,
+        "Matched":  "prompt-workflow:1",
+        "Description":  "ESPHome is a system to control your ESP32, ESP8266, BK72xx, RP2040 by simple yet powerful configuration files and control them remotely through Home Automation systems.",
+        "ReadmeSignal":  "",
+        "Url":  "https://github.com/DevMeoU/esphome",
+        "CloneUrl":  "https://github.com/DevMeoU/esphome.git",
+        "Updated":  "2026-04-26T15:50:42Z"
+    },
+    {
+        "Repo":  "FlintExample",
+        "Score":  1,
+        "Matched":  "prompt-workflow:1",
+        "Description":  null,
+        "ReadmeSignal":  "",
+        "Url":  "https://github.com/DevMeoU/FlintExample",
+        "CloneUrl":  "https://github.com/DevMeoU/FlintExample.git",
+        "Updated":  "2026-04-24T07:31:56Z"
+    },
+    {
+        "Repo":  "flintvn-extentions",
+        "Score":  1,
+        "Matched":  "prompt-workflow:1",
+        "Description":  null,
+        "ReadmeSignal":  "",
+        "Url":  "https://github.com/DevMeoU/flintvn-extentions",
+        "CloneUrl":  "https://github.com/DevMeoU/flintvn-extentions.git",
+        "Updated":  "2026-04-24T07:31:57Z"
+    },
+    {
+        "Repo":  "Software-Learning",
+        "Score":  1,
+        "Matched":  "skill:1",
+        "Description":  "This is a small project for learning and up skill",
+        "ReadmeSignal":  "",
+        "Url":  "https://github.com/DevMeoU/Software-Learning",
+        "CloneUrl":  "https://github.com/DevMeoU/Software-Learning.git",
+        "Updated":  "2026-04-24T07:32:40Z"
+    },
+    {
+        "Repo":  "ytsr",
+        "Score":  1,
+        "Matched":  "token-model:1",
+        "Description":  "Do anonymous YouTube search requests. Made for https://DisTube.js.org.",
+        "ReadmeSignal":  "url: \u0027https://i.ytimg.com/vi/CLeZyIID9Bo/hq720.jpg?sqp=-oaymwE9COgCEMoBSFryq4qpAy8IARUAAAAAGAElAADIQj0AgKJDeAHwAQH4Af4JgALQBYoCDAgAEAEYRyBlKFkwDw==\u0026rs=AOn4CLCUPAL7mhZ-wVunrmOhcxcNgptn2Q\u0027,",
+        "Url":  "https://github.com/DevMeoU/ytsr",
+        "CloneUrl":  "https://github.com/DevMeoU/ytsr.git",
+        "Updated":  "2026-04-24T07:32:58Z"
+    }
+]
